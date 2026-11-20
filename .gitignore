@@ -46,3 +46,6 @@ app.*.map.json
 
 # Widget Preview related
 .widget_preview/
+
+# Configuración local de la app (copiar de dart_defines.example.json)
+dart_defines.json

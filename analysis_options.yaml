@@ -6,3 +6,11 @@ analyzer:
     - "**/*.freezed.dart"
     - build/**
     - android/**
+  errors:
+    invalid_annotation_target: ignore
+
+linter:
+  rules:
+    public_member_api_docs: false
+    unnecessary_const_in_enum_constructor: false
+    unnecessary_type_name_in_constructor: false
