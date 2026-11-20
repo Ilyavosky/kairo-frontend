@@ -47,7 +47,7 @@ void main() {
 
     expect(find.text(const NetworkException().message), findsOneWidget);
     expect(find.text('Reintentar'), findsOneWidget);
-  });  
+  });
   testWidgets('con sesión abre Inicio con las cinco secciones', (tester) async {
     await pumpApp(tester, token: 'token-guardado');
 
