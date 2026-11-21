@@ -8,6 +8,7 @@ import 'package:kairo/core/router/section_placeholder.dart';
 import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
+import 'package:kairo/features/activities/presentation/screens/activities_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
@@ -51,6 +52,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
               routes: [
                 if (section == AppSection.more)
                   _moreRoute
+                else if (section == AppSection.activities)
+                  GoRoute(
+                    path: section.path,
+                    builder: (context, state) => const ActivitiesScreen(),
+                  )
                 else
                   GoRoute(
                     path: section.path,
