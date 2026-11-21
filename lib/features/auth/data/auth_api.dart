@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kairo/core/api/api_config.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/auth/data/models/login_request.dart';
@@ -13,12 +14,12 @@ class AuthApi {
   final Dio _dio;
 
   Future<TokenResponse> login(LoginRequest request) async {
-    final data = await _post('/auth/login', request.toJson());
+    final data = await _post('${ApiConfig.v1}/auth/login', request.toJson());
     return TokenResponse.fromJson(data);
   }
 
   Future<UserResponse> register(RegisterRequest request) async {
-    final data = await _post('/auth/registro', request.toJson());
+    final data = await _post('${ApiConfig.v1}/auth/registro', request.toJson());
     return UserResponse.fromJson(data);
   }
 

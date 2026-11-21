@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kairo/core/api/api_config.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/subjects/data/models/subject.dart';
@@ -8,7 +9,7 @@ import 'package:kairo/features/subjects/data/models/subject_input.dart';
 class SubjectsApi {
   const SubjectsApi(this._dio);
 
-  static const _path = '/materias';
+  static const _path = '${ApiConfig.v1}/materias';
 
   final Dio _dio;
 
