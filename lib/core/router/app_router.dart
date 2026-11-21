@@ -9,6 +9,7 @@ import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
 import 'package:kairo/features/activities/presentation/screens/activities_screen.dart';
+import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
@@ -53,10 +54,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 if (section == AppSection.more)
                   _moreRoute
                 else if (section == AppSection.activities)
-                  GoRoute(
-                    path: section.path,
-                    builder: (context, state) => const ActivitiesScreen(),
-                  )
+                  _activitiesRoute
                 else
                   GoRoute(
                     path: section.path,
@@ -76,6 +74,22 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+final _activitiesRoute = GoRoute(
+  path: AppSection.activities.path,
+  builder: (context, state) => const ActivitiesScreen(),
+  routes: [
+    GoRoute(
+      path: 'nueva',
+      builder: (context, state) => const ActivityFormScreen(),
+    ),
+    GoRoute(
+      path: ':id',
+      builder: (context, state) =>
+          ActivityFormScreen(activityId: state.pathParameters['id']),
+    ),
+  ],
+);
 
 final _moreRoute = GoRoute(
   path: AppSection.more.path,

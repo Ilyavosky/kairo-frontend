@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
+import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/empty_state.dart';
 import 'package:kairo/core/widgets/error_view.dart';
@@ -21,25 +23,38 @@ class ActivitiesScreen extends ConsumerWidget {
     final activities = ref.watch(activitiesControllerProvider);
     final filter = ref.watch(activityFilterProvider);
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Stack(
       children: [
-        const KairoHeader(title: 'Actividades'),
-        const ActivityFilters(),
-        Expanded(
-          child: switch (activities) {
-            AsyncData(:final value) when value.isEmpty => _EmptyActivities(
-              filter: filter,
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const KairoHeader(title: 'Actividades'),
+            const ActivityFilters(),
+            Expanded(
+              child: switch (activities) {
+                AsyncData(:final value) when value.isEmpty => _EmptyActivities(
+                  filter: filter,
+                ),
+                AsyncData(:final value) => _ActivityList(activities: value),
+                AsyncError(:final error) => ErrorView(
+                  message: toAppException(error).message,
+                  onRetry: () => ref.invalidate(activitiesControllerProvider),
+                ),
+                _ => const Center(
+                  child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
+                ),
+              },
             ),
-            AsyncData(:final value) => _ActivityList(activities: value),
-            AsyncError(:final error) => ErrorView(
-              message: toAppException(error).message,
-              onRetry: () => ref.invalidate(activitiesControllerProvider),
-            ),
-            _ => const Center(
-              child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
-            ),
-          },
+          ],
+        ),
+        Positioned(
+          right: KairoSpacing.page,
+          bottom: KairoSpacing.lg,
+          child: FloatingActionButton(
+            onPressed: () => context.go(AppRoutes.newActivity),
+            tooltip: 'Nueva actividad',
+            child: const Icon(Icons.add),
+          ),
         ),
       ],
     );
@@ -112,7 +127,7 @@ class _ActivityList extends ConsumerWidget {
           KairoSpacing.page,
           KairoSpacing.sm,
           KairoSpacing.page,
-          KairoSpacing.xl,
+          96,
         ),
         itemCount: activities.length,
         separatorBuilder: (context, index) =>
@@ -126,6 +141,7 @@ class _ActivityList extends ConsumerWidget {
             subjectName: subjectId == null ? null : names[subjectId],
             now: now,
             onToggle: () => _toggle(context, ref, activity),
+            onTap: () => context.go(AppRoutes.activity(activity.id)),
           );
         },
       ),

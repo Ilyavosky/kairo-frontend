@@ -4,6 +4,7 @@ import 'package:kairo/core/api/api_config.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
+import 'package:kairo/features/activities/data/models/activity_input.dart';
 import 'package:kairo/features/activities/domain/activity_filter.dart';
 import 'package:kairo/features/activities/domain/activity_status.dart';
 
@@ -32,6 +33,20 @@ class ActivitiesApi {
     });
   }
 
+  Future<Activity> create(ActivityInput input) {
+    return _request(() async {
+      final response = await _dio.post<Map<String, dynamic>>(
+        _path,
+        data: input.toJson(),
+      );
+      return Activity.fromJson(response.data ?? const {});
+    });
+  }
+
+  Future<Activity> update(String id, ActivityInput input) {
+    return _patch(id, input.toJson());
+  }
+
   Future<Activity> complete(String id) {
     return _request(() async {
       final response = await _dio.post<Map<String, dynamic>>(
@@ -42,10 +57,14 @@ class ActivitiesApi {
   }
 
   Future<Activity> reopen(String id) {
+    return _patch(id, {'estado': ActivityStatus.pending.apiValue});
+  }
+
+  Future<Activity> _patch(String id, Map<String, dynamic> body) {
     return _request(() async {
       final response = await _dio.patch<Map<String, dynamic>>(
         '$_path/$id',
-        data: {'estado': ActivityStatus.pending.apiValue},
+        data: body,
       );
       return Activity.fromJson(response.data ?? const {});
     });

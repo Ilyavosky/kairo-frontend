@@ -1,5 +1,6 @@
 import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
+import 'package:kairo/features/activities/data/models/activity_input.dart';
 import 'package:kairo/features/activities/domain/activity_filter.dart';
 import 'package:kairo/features/activities/domain/activity_status.dart';
 
@@ -16,6 +17,9 @@ class FakeActivitiesApi implements ActivitiesApi {
   final List<ActivityFilter> filters = [];
   final List<String> completedIds = [];
   final List<String> reopenedIds = [];
+  final List<ActivityInput> created = [];
+  final Map<String, ActivityInput> updated = {};
+  var _nextId = 1;
 
   @override
   Future<List<Activity>> list(ActivityFilter filter) async {
@@ -31,6 +35,42 @@ class FakeActivitiesApi implements ActivitiesApi {
                 activity.subjectId == filter.subjectId))
           activity,
     ];
+  }
+
+  @override
+  Future<Activity> create(ActivityInput input) async {
+    created.add(input);
+    final activity = Activity(
+      id: 'nueva-${_nextId++}',
+      categoryId: input.categoryId,
+      title: input.title,
+      priority: input.priority,
+      modality: input.modality,
+      status: ActivityStatus.pending,
+      createdAt: DateTime.now(),
+      subjectId: input.subjectId,
+      description: input.description,
+      dueAt: input.dueAt,
+    );
+    _activities.add(activity);
+    return activity;
+  }
+
+  @override
+  Future<Activity> update(String id, ActivityInput input) async {
+    updated[id] = input;
+    final index = _activities.indexWhere((activity) => activity.id == id);
+    final saved = _activities[index].copyWith(
+      categoryId: input.categoryId,
+      title: input.title,
+      priority: input.priority,
+      modality: input.modality,
+      subjectId: input.subjectId,
+      description: input.description,
+      dueAt: input.dueAt,
+    );
+    _activities[index] = saved;
+    return saved;
   }
 
   @override
