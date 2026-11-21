@@ -6,10 +6,14 @@ import 'package:kairo/core/api/health_api.dart';
 import 'package:kairo/core/api/models/health_status.dart';
 import 'package:kairo/core/errors/app_exception.dart';
 import 'package:kairo/core/storage/token_storage.dart';
+import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/auth/data/auth_api.dart';
 import 'package:kairo/features/auth/data/timezone_source.dart';
+import 'package:kairo/features/home/data/calendar_api.dart';
 
+import '../../../helpers/fake_activities_api.dart';
 import '../../../helpers/fake_auth_api.dart';
+import '../../../helpers/fake_calendar_api.dart';
 import '../../../helpers/fake_timezone_source.dart';
 import '../../../helpers/memory_token_storage.dart';
 
@@ -29,6 +33,8 @@ void main() {
           tokenStorageProvider.overrideWithValue(storage),
           authApiProvider.overrideWithValue(api),
           timezoneSourceProvider.overrideWithValue(const FakeTimezoneSource()),
+          activitiesApiProvider.overrideWithValue(FakeActivitiesApi()),
+          calendarApiProvider.overrideWithValue(FakeCalendarApi()),
           healthStatusProvider.overrideWith(
             (ref) => Future.value(const HealthStatus(status: 'healthy')),
           ),

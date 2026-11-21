@@ -18,6 +18,8 @@ class KairoTextField extends StatelessWidget {
     this.readOnly = false,
     this.onTap,
     this.helperText,
+    this.minLines,
+    this.maxLines = 1,
     super.key,
   });
 
@@ -36,6 +38,8 @@ class KairoTextField extends StatelessWidget {
   final bool readOnly;
   final VoidCallback? onTap;
   final String? helperText;
+  final int? minLines;
+  final int maxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +61,8 @@ class KairoTextField extends StatelessWidget {
           enabled: enabled,
           readOnly: readOnly,
           onTap: onTap,
+          minLines: minLines,
+          maxLines: maxLines,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             hintText: hint,
