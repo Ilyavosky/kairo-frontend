@@ -5,6 +5,7 @@ import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
 import 'package:kairo/features/activities/domain/activity_filter.dart';
 import 'package:kairo/features/activities/domain/activity_status.dart';
+import 'package:kairo/features/home/presentation/controllers/agenda_controller.dart';
 
 class ActivityFilterController extends Notifier<ActivityFilter> {
   @override
@@ -53,6 +54,7 @@ class ActivitiesController extends AsyncNotifier<List<Activity>> {
     try {
       final api = ref.read(activitiesApiProvider);
       final saved = completing ? await api.complete(id) : await api.reopen(id);
+      ref.invalidate(agendaProvider);
       if (ref.mounted && !hide) {
         state = AsyncData([
           for (final activity in state.value ?? optimistic)

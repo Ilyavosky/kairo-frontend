@@ -13,5 +13,7 @@ abstract final class AppRoutes {
 
   static String activity(String id) => '$activities/$id';
 
+  static String homeActivity(String id) => '/inicio/actividad/$id';
+
   static String subject(String id) => '$subjects/$id';
 }

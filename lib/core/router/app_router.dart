@@ -8,10 +8,12 @@ import 'package:kairo/core/router/section_placeholder.dart';
 import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
+import 'package:kairo/features/activities/data/models/activity.dart';
 import 'package:kairo/features/activities/presentation/screens/activities_screen.dart';
 import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
+import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
@@ -55,6 +57,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   _moreRoute
                 else if (section == AppSection.activities)
                   _activitiesRoute
+                else if (section == AppSection.home)
+                  _homeRoute
                 else
                   GoRoute(
                     path: section.path,
@@ -74,6 +78,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+final _homeRoute = GoRoute(
+  path: AppSection.home.path,
+  builder: (context, state) => const HomeScreen(),
+  routes: [
+    GoRoute(
+      path: 'actividad/:id',
+      builder: (context, state) => ActivityFormScreen(
+        activityId: state.pathParameters['id'],
+        initial: state.extra is Activity ? state.extra! as Activity : null,
+      ),
+    ),
+  ],
+);
 
 final _activitiesRoute = GoRoute(
   path: AppSection.activities.path,

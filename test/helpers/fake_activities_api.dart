@@ -38,6 +38,21 @@ class FakeActivitiesApi implements ActivitiesApi {
   }
 
   @override
+  Future<List<Activity>> listDueBetween(DateTime from, DateTime to) async {
+    final error = listError;
+    if (error != null) {
+      throw error;
+    }
+    return [
+      for (final activity in _activities)
+        if (activity.dueAt != null &&
+            !activity.dueAt!.isBefore(from) &&
+            !activity.dueAt!.isAfter(to))
+          activity,
+    ];
+  }
+
+  @override
   Future<Activity> create(ActivityInput input) async {
     created.add(input);
     final activity = Activity(

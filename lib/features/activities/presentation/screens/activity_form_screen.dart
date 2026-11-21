@@ -22,9 +22,10 @@ import 'package:kairo/features/subjects/data/models/subject.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
 
 class ActivityFormScreen extends ConsumerWidget {
-  const ActivityFormScreen({this.activityId, super.key});
+  const ActivityFormScreen({this.activityId, this.initial, super.key});
 
   final String? activityId;
+  final Activity? initial;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -45,12 +46,17 @@ class ActivityFormScreen extends ConsumerWidget {
   Widget _existing(WidgetRef ref, String id) {
     final activities = ref.watch(activitiesControllerProvider);
     final list = activities.value;
-    if (list != null) {
-      for (final activity in list) {
-        if (activity.id == id) {
-          return _ActivityForm(activity: activity);
-        }
+    Activity? found;
+    for (final activity in list ?? const <Activity>[]) {
+      if (activity.id == id) {
+        found = activity;
       }
+    }
+    found ??= initial?.id == id ? initial : null;
+    if (found != null) {
+      return _ActivityForm(activity: found);
+    }
+    if (list != null) {
       return const Center(child: Text('Esta actividad ya no está disponible.'));
     }
     final error = activities.error;

@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/models/activity_input.dart';
 import 'package:kairo/features/activities/presentation/controllers/activities_controller.dart';
+import 'package:kairo/features/home/presentation/controllers/agenda_controller.dart';
 
 class ActivityFormController extends AsyncNotifier<void> {
   @override
@@ -35,7 +36,9 @@ class ActivityFormController extends AsyncNotifier<void> {
     state = const AsyncLoading();
     final result = await AsyncValue.guard(() async {
       await action();
-      ref.invalidate(activitiesControllerProvider);
+      ref
+        ..invalidate(activitiesControllerProvider)
+        ..invalidate(agendaProvider);
     });
     if (ref.mounted) {
       state = result;

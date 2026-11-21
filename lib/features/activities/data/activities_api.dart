@@ -33,6 +33,23 @@ class ActivitiesApi {
     });
   }
 
+  Future<List<Activity>> listDueBetween(DateTime from, DateTime to) {
+    return _request(() async {
+      final response = await _dio.get<List<dynamic>>(
+        _path,
+        queryParameters: {
+          'limite': _pageSize,
+          'desde': from.toUtc().toIso8601String(),
+          'hasta': to.toUtc().toIso8601String(),
+        },
+      );
+      return [
+        for (final item in response.data ?? const [])
+          Activity.fromJson(item as Map<String, dynamic>),
+      ];
+    });
+  }
+
   Future<Activity> create(ActivityInput input) {
     return _request(() async {
       final response = await _dio.post<Map<String, dynamic>>(

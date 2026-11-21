@@ -53,9 +53,12 @@ class DueLabel {
     'dic',
   ];
 
-  static String shortDate(DateTime date) {
+  static String shortDate(DateTime date) =>
+      '${_weekdays[date.weekday - 1]} ${dayMonth(date)}';
+
+  static String dayMonth(DateTime date) {
     final day = date.day.toString().padLeft(2, '0');
-    return '${_weekdays[date.weekday - 1]} $day ${_months[date.month - 1]}';
+    return '$day ${_months[date.month - 1]}';
   }
 
   static String hour(DateTime date) {
