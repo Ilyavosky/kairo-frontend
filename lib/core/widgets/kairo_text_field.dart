@@ -15,6 +15,9 @@ class KairoTextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.suffix,
     this.enabled = true,
+    this.readOnly = false,
+    this.onTap,
+    this.helperText,
     super.key,
   });
 
@@ -30,6 +33,9 @@ class KairoTextField extends StatelessWidget {
   final ValueChanged<String>? onFieldSubmitted;
   final Widget? suffix;
   final bool enabled;
+  final bool readOnly;
+  final VoidCallback? onTap;
+  final String? helperText;
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +55,12 @@ class KairoTextField extends StatelessWidget {
           autofillHints: autofillHints,
           onFieldSubmitted: onFieldSubmitted,
           enabled: enabled,
+          readOnly: readOnly,
+          onTap: onTap,
           autovalidateMode: AutovalidateMode.onUserInteraction,
           decoration: InputDecoration(
             hintText: hint,
+            helperText: helperText,
             prefixIcon: icon == null
                 ? null
                 : Icon(icon, color: theme.colorScheme.primary),

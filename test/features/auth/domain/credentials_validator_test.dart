@@ -2,6 +2,20 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:kairo/features/auth/domain/credentials_validator.dart';
 
 void main() {
+  group('CredentialsValidator.name', () {
+    test('pide el nombre si viene vacío', () {
+      expect(CredentialsValidator.name('  '), 'Escribe tu nombre');
+    });
+
+    test('rechaza nombres de más de 100 caracteres', () {
+      expect(CredentialsValidator.name('a' * 101), isNotNull);
+    });
+
+    test('acepta un nombre válido', () {
+      expect(CredentialsValidator.name('Aurora'), isNull);
+    });
+  });
+
   group('CredentialsValidator.email', () {
     test('pide el correo si viene vacío', () {
       expect(CredentialsValidator.email(''), 'Escribe tu correo');

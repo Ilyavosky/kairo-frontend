@@ -9,6 +9,7 @@ import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
+import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
@@ -33,6 +34,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
