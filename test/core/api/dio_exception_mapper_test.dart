@@ -40,6 +40,18 @@ void main() {
       expect(mapDioException(badResponse(401)), isA<UnauthorizedException>());
     });
 
+    test('usa el detalle del servidor en un 401', () {
+      final result = mapDioException(
+        badResponse(401, {
+          'codigo': 'credenciales_invalidas',
+          'detalle': 'Correo o contraseña incorrectos',
+        }),
+      );
+
+      expect(result, isA<UnauthorizedException>());
+      expect(result.message, 'Correo o contraseña incorrectos');
+    });
+
     test('usa el detalle del servidor en errores de validación', () {
       final result = mapDioException(
         badResponse(409, {

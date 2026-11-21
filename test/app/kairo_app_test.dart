@@ -31,13 +31,11 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('sin sesión muestra el inicio de sesión y el servidor', (
-    tester,
-  ) async {
+  testWidgets('sin sesión muestra el inicio de sesión', (tester) async {
     await pumpApp(tester);
 
-    expect(find.text('Inicio de sesión'), findsOneWidget);
-    expect(find.text('Servidor disponible'), findsOneWidget);
+    expect(find.text('Ingresa tus datos para continuar'), findsOneWidget);
+    expect(find.text('Reintentar'), findsNothing);
   });
 
   testWidgets('si el servidor no responde muestra el error y reintentar', (
@@ -48,6 +46,7 @@ void main() {
     expect(find.text(const NetworkException().message), findsOneWidget);
     expect(find.text('Reintentar'), findsOneWidget);
   });
+
   testWidgets('con sesión abre Inicio con las cinco secciones', (tester) async {
     await pumpApp(tester, token: 'token-guardado');
 
