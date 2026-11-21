@@ -9,6 +9,10 @@ import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
+import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
+import 'package:kairo/features/more/presentation/screens/more_screen.dart';
+import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
+import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
@@ -34,6 +38,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
+      GoRoute(
+        path: AppRoutes.register,
+        builder: (context, state) => const RegisterScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) =>
             AppShell(navigationShell: navigationShell),
@@ -41,11 +49,14 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           for (final section in AppSection.values)
             StatefulShellBranch(
               routes: [
-                GoRoute(
-                  path: section.path,
-                  builder: (context, state) =>
-                      SectionPlaceholder(section: section),
-                ),
+                if (section == AppSection.more)
+                  _moreRoute
+                else
+                  GoRoute(
+                    path: section.path,
+                    builder: (context, state) =>
+                        SectionPlaceholder(section: section),
+                  ),
               ],
             ),
         ],
@@ -59,3 +70,25 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+final _moreRoute = GoRoute(
+  path: AppSection.more.path,
+  builder: (context, state) => const MoreScreen(),
+  routes: [
+    GoRoute(
+      path: 'materias',
+      builder: (context, state) => const SubjectsScreen(),
+      routes: [
+        GoRoute(
+          path: 'nueva',
+          builder: (context, state) => const SubjectFormScreen(),
+        ),
+        GoRoute(
+          path: ':id',
+          builder: (context, state) =>
+              SubjectFormScreen(subjectId: state.pathParameters['id']),
+        ),
+      ],
+    ),
+  ],
+);

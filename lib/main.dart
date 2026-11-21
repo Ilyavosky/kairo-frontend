@@ -8,5 +8,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Intl.defaultLocale = 'es_MX';
   await initializeDateFormatting('es_MX');
-  runApp(const ProviderScope(child: KairoApp()));
+  runApp(
+    ProviderScope(retry: (retryCount, error) => null, child: const KairoApp()),
+  );
 }

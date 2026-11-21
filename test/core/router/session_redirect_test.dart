@@ -40,6 +40,26 @@ void main() {
       );
     });
 
+    test('sin sesión deja abrir la pantalla de crear cuenta', () {
+      expect(
+        sessionRedirect(
+          session: const AsyncData(false),
+          location: AppRoutes.register,
+        ),
+        isNull,
+      );
+    });
+
+    test('con sesión saca de la pantalla de crear cuenta', () {
+      expect(
+        sessionRedirect(
+          session: const AsyncData(true),
+          location: AppRoutes.register,
+        ),
+        AppSection.home.path,
+      );
+    });
+
     test('si falla la lectura de la sesión manda al inicio de sesión', () {
       expect(
         sessionRedirect(

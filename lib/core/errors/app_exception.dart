@@ -18,8 +18,9 @@ final class RequestTimeoutException extends AppException {
 }
 
 final class UnauthorizedException extends AppException {
-  const UnauthorizedException()
-    : super('Tu sesión expiró. Inicia sesión otra vez.');
+  const UnauthorizedException([
+    super.message = 'Tu sesión expiró. Inicia sesión otra vez.',
+  ]);
 }
 
 final class NotFoundException extends AppException {

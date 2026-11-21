@@ -12,10 +12,12 @@ String? sessionRedirect({
 
   final signedIn = session.value ?? false;
   if (!signedIn) {
-    return location == AppRoutes.login ? null : AppRoutes.login;
+    final onAuthRoute =
+        location == AppRoutes.login || location == AppRoutes.register;
+    return onAuthRoute ? null : AppRoutes.login;
   }
 
-  final onPublicRoute =
-      location == AppRoutes.splash || location == AppRoutes.login;
-  return onPublicRoute ? AppSection.home.path : null;
+  return AppRoutes.publicRoutes.contains(location)
+      ? AppSection.home.path
+      : null;
 }
