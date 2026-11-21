@@ -102,121 +102,126 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         child: Form(
           key: _formKey,
           child: AutofillGroup(
-            child: ListView(
+            child: SingleChildScrollView(
               padding: const EdgeInsets.symmetric(
                 horizontal: KairoSpacing.page,
                 vertical: KairoSpacing.xl,
               ),
-              children: [
-                const SizedBox(height: KairoSpacing.lg),
-                Semantics(
-                  header: true,
-                  child: Text.rich(
-                    TextSpan(
-                      text: 'Crear cuenta en ',
-                      children: [
-                        TextSpan(
-                          text: 'Kairo',
-                          style: TextStyle(color: theme.colorScheme.secondary),
-                        ),
-                      ],
-                    ),
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.headlineSmall,
-                  ),
-                ),
-                const SizedBox(height: KairoSpacing.xl),
-                KairoTextField(
-                  label: 'Nombre',
-                  controller: _nameController,
-                  hint: 'Tu nombre completo',
-                  icon: Icons.person,
-                  keyboardType: TextInputType.name,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.name],
-                  validator: CredentialsValidator.name,
-                  enabled: !loading,
-                ),
-                const SizedBox(height: KairoSpacing.xl),
-                KairoTextField(
-                  label: 'Correo',
-                  controller: _emailController,
-                  hint: 'escribe@tucorreo.com',
-                  icon: Icons.mail,
-                  keyboardType: TextInputType.emailAddress,
-                  textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.email],
-                  validator: CredentialsValidator.email,
-                  enabled: !loading,
-                ),
-                const SizedBox(height: KairoSpacing.xl),
-                KairoTextField(
-                  label: 'Contraseña',
-                  controller: _passwordController,
-                  hint: 'Mínimo 8 caracteres',
-                  icon: Icons.lock,
-                  obscureText: !_passwordVisible,
-                  textInputAction: TextInputAction.done,
-                  autofillHints: const [AutofillHints.newPassword],
-                  validator: CredentialsValidator.password,
-                  enabled: !loading,
-                  suffix: IconButton(
-                    tooltip: _passwordVisible
-                        ? 'Ocultar contraseña'
-                        : 'Mostrar contraseña',
-                    onPressed: () =>
-                        setState(() => _passwordVisible = !_passwordVisible),
-                    icon: Icon(
-                      _passwordVisible
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: KairoSpacing.xl),
-                KairoTextField(
-                  label: 'Zona horaria',
-                  controller: _timezoneController,
-                  icon: Icons.public,
-                  readOnly: true,
-                  onTap: loading ? null : _pickTimezone,
-                  helperText: '$_timezone · Tomada de tu dispositivo',
-                  enabled: !loading,
-                  suffix: const Icon(Icons.expand_more),
-                ),
-                if (error != null) ...[
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
                   const SizedBox(height: KairoSpacing.lg),
-                  FormErrorMessage(message: error),
-                ],
-                const SizedBox(height: KairoSpacing.xl),
-                FilledButton(
-                  onPressed: loading ? null : _submit,
-                  child: loading
-                      ? SizedBox.square(
-                          dimension: 22,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2.5,
-                            color: theme.colorScheme.onPrimary,
-                            semanticsLabel: 'Creando cuenta',
+                  Semantics(
+                    header: true,
+                    child: Text.rich(
+                      TextSpan(
+                        text: 'Crear cuenta en ',
+                        children: [
+                          TextSpan(
+                            text: 'Kairo',
+                            style: TextStyle(
+                              color: theme.colorScheme.secondary,
+                            ),
                           ),
-                        )
-                      : const Text('Crear cuenta'),
-                ),
-                const SizedBox(height: KairoSpacing.lg),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      '¿Ya tienes cuenta?',
-                      style: theme.textTheme.bodySmall,
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineSmall,
                     ),
-                    TextButton(
-                      onPressed: loading ? null : _goToLogin,
-                      child: const Text('Inicia sesión'),
+                  ),
+                  const SizedBox(height: KairoSpacing.xl),
+                  KairoTextField(
+                    label: 'Nombre',
+                    controller: _nameController,
+                    hint: 'Tu nombre completo',
+                    icon: Icons.person,
+                    keyboardType: TextInputType.name,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.name],
+                    validator: CredentialsValidator.name,
+                    enabled: !loading,
+                  ),
+                  const SizedBox(height: KairoSpacing.xl),
+                  KairoTextField(
+                    label: 'Correo',
+                    controller: _emailController,
+                    hint: 'escribe@tucorreo.com',
+                    icon: Icons.mail,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    autofillHints: const [AutofillHints.email],
+                    validator: CredentialsValidator.email,
+                    enabled: !loading,
+                  ),
+                  const SizedBox(height: KairoSpacing.xl),
+                  KairoTextField(
+                    label: 'Contraseña',
+                    controller: _passwordController,
+                    hint: 'Mínimo 8 caracteres',
+                    icon: Icons.lock,
+                    obscureText: !_passwordVisible,
+                    textInputAction: TextInputAction.done,
+                    autofillHints: const [AutofillHints.newPassword],
+                    validator: CredentialsValidator.password,
+                    enabled: !loading,
+                    suffix: IconButton(
+                      tooltip: _passwordVisible
+                          ? 'Ocultar contraseña'
+                          : 'Mostrar contraseña',
+                      onPressed: () =>
+                          setState(() => _passwordVisible = !_passwordVisible),
+                      icon: Icon(
+                        _passwordVisible
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                      ),
                     ),
+                  ),
+                  const SizedBox(height: KairoSpacing.xl),
+                  KairoTextField(
+                    label: 'Zona horaria',
+                    controller: _timezoneController,
+                    icon: Icons.public,
+                    readOnly: true,
+                    onTap: loading ? null : _pickTimezone,
+                    helperText: '$_timezone · Tomada de tu dispositivo',
+                    enabled: !loading,
+                    suffix: const Icon(Icons.expand_more),
+                  ),
+                  if (error != null) ...[
+                    const SizedBox(height: KairoSpacing.lg),
+                    FormErrorMessage(message: error),
                   ],
-                ),
-              ],
+                  const SizedBox(height: KairoSpacing.xl),
+                  FilledButton(
+                    onPressed: loading ? null : _submit,
+                    child: loading
+                        ? SizedBox.square(
+                            dimension: 22,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
+                              color: theme.colorScheme.onPrimary,
+                              semanticsLabel: 'Creando cuenta',
+                            ),
+                          )
+                        : const Text('Crear cuenta'),
+                  ),
+                  const SizedBox(height: KairoSpacing.lg),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '¿Ya tienes cuenta?',
+                        style: theme.textTheme.bodySmall,
+                      ),
+                      TextButton(
+                        onPressed: loading ? null : _goToLogin,
+                        child: const Text('Inicia sesión'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
