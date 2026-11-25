@@ -94,6 +94,8 @@ void main() {
     expect(find.text('1 h 30 min'), findsNWidgets(2));
     expect(find.text('45 min'), findsNWidgets(2));
     expect(find.textContaining('Capítulo 3'), findsOneWidget);
+    expect(find.text('Estudio 1 h 30 min'), findsOneWidget);
+    expect(find.text('Ejercicio 45 min'), findsOneWidget);
   });
 
   testWidgets('edita la categoría y la nota de un registro', (tester) async {

@@ -3,9 +3,15 @@ import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
 import 'package:kairo/features/time_tracking/data/timer_api.dart';
 
 class FakeTimerApi implements TimerApi {
-  FakeTimerApi({this.running, this.currentError, this.stopError});
+  FakeTimerApi({
+    this.running,
+    this.currentError,
+    this.stopError,
+    this.startedElsewhere,
+  });
 
   TimerSession? running;
+  TimerSession? startedElsewhere;
   Exception? currentError;
   Exception? stopError;
   final List<({String categoryId, String? activityId})> started = [];
@@ -21,22 +27,25 @@ class FakeTimerApi implements TimerApi {
   }
 
   @override
-  Future<TimerSession> start({
+  Future<TimerStart> start({
     required String categoryId,
     String? activityId,
   }) async {
     started.add((categoryId: categoryId, activityId: activityId));
-    final session =
-        running ??
-        TimerSession(
-          id: 'sesion-${started.length}',
-          categoryId: categoryId,
-          activityId: activityId,
-          startedAt: DateTime.now(),
-          elapsedSeconds: 0,
-        );
+    final elsewhere = startedElsewhere ?? running;
+    if (elsewhere != null) {
+      running = elsewhere;
+      return (session: elsewhere, alreadyRunning: true);
+    }
+    final session = TimerSession(
+      id: 'sesion-${started.length}',
+      categoryId: categoryId,
+      activityId: activityId,
+      startedAt: DateTime.now(),
+      elapsedSeconds: 0,
+    );
     running = session;
-    return session;
+    return (session: session, alreadyRunning: false);
   }
 
   @override

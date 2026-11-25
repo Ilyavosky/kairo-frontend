@@ -7,6 +7,8 @@ import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/empty_state.dart';
 import 'package:kairo/core/widgets/error_view.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
+import 'package:kairo/features/activities/data/models/activity.dart';
+import 'package:kairo/features/activities/data/models/activity_category.dart';
 import 'package:kairo/features/time_tracking/data/models/time_record.dart';
 import 'package:kairo/features/time_tracking/data/time_records_api.dart';
 import 'package:kairo/features/time_tracking/domain/duration_format.dart';
@@ -70,14 +72,15 @@ class _RecordList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final categoryList =
+        ref.watch(categoriesProvider).value ?? const <ActivityCategory>[];
+    final activityList =
+        ref.watch(openActivitiesProvider).value ?? const <Activity>[];
     final categories = {
-      for (final category in ref.watch(categoriesProvider).value ?? const [])
-        category.id: category.name,
+      for (final category in categoryList) category.id: category.name,
     };
     final activities = {
-      for (final activity
-          in ref.watch(openActivitiesProvider).value ?? const [])
-        activity.id: activity.title,
+      for (final activity in activityList) activity.id: activity.title,
     };
     final groups = RecordGroups.of(records, DateTime.now());
 
@@ -106,6 +109,21 @@ class _RecordList extends ConsumerWidget {
                   DurationFormat.short(group.total),
                   style: theme.textTheme.bodySmall,
                 ),
+              ],
+            ),
+            const SizedBox(height: KairoSpacing.xs),
+            Wrap(
+              spacing: KairoSpacing.sm,
+              runSpacing: KairoSpacing.xs,
+              children: [
+                for (final item in group.categoryTotals)
+                  Chip(
+                    visualDensity: VisualDensity.compact,
+                    label: Text(
+                      '${categories[item.categoryId] ?? 'Categoría'} '
+                      '${DurationFormat.short(item.total)}',
+                    ),
+                  ),
               ],
             ),
             const SizedBox(height: KairoSpacing.sm),

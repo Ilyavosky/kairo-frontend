@@ -6,6 +6,8 @@ import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/time_tracking/data/models/time_record.dart';
 import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
 
+typedef TimerStart = ({TimerSession session, bool alreadyRunning});
+
 class TimerApi {
   const TimerApi(this._dio);
 
@@ -25,7 +27,7 @@ class TimerApi {
     }
   }
 
-  Future<TimerSession> start({
+  Future<TimerStart> start({
     required String categoryId,
     String? activityId,
   }) async {
@@ -34,12 +36,15 @@ class TimerApi {
         '$_path/iniciar',
         data: {'categoria_id': categoryId, 'actividad_id': activityId},
       );
-      return TimerSession.fromJson(response.data ?? const {});
+      return (
+        session: TimerSession.fromJson(response.data ?? const {}),
+        alreadyRunning: false,
+      );
     } on DioException catch (error) {
       if (error.response?.statusCode == 409) {
         final running = await current();
         if (running != null) {
-          return running;
+          return (session: running, alreadyRunning: true);
         }
       }
       throw toAppException(error);

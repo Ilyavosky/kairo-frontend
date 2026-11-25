@@ -192,15 +192,26 @@ class _IdleTimerState extends ConsumerState<_IdleTimer> {
       return;
     }
     setState(() => _starting = true);
-    final error = await ref
+    final messenger = ScaffoldMessenger.of(context);
+    final result = await ref
         .read(timerControllerProvider.notifier)
         .start(categoryId: categoryId, activityId: _activityId);
-    if (!mounted) {
-      return;
+    if (mounted) {
+      setState(() => _starting = false);
     }
-    setState(() => _starting = false);
-    if (error != null) {
-      _showMessage('No se pudo iniciar. ${error.message}');
+    final error = result.error;
+    final existing = result.alreadyRunning;
+    final message = error != null
+        ? 'No se pudo iniciar. ${error.message}'
+        : existing != null
+        ? 'Ya tienes un temporizador en curso desde las '
+              '${DueLabel.hour(existing.startedAt.toLocal())}. '
+              'Detenlo antes de iniciar otro.'
+        : null;
+    if (message != null) {
+      messenger
+        ..hideCurrentSnackBar()
+        ..showSnackBar(SnackBar(content: Text(message)));
     }
   }
 

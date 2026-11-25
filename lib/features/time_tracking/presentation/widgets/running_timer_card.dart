@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
+import 'package:kairo/features/activities/data/models/activity_category.dart';
 import 'package:kairo/features/time_tracking/domain/duration_format.dart';
 import 'package:kairo/features/time_tracking/presentation/controllers/timer_controller.dart';
 import 'package:kairo/features/time_tracking/presentation/widgets/elapsed_clock.dart';
@@ -63,7 +64,9 @@ class _RunningTimerCardState extends ConsumerState<RunningTimerCard> {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
     var categoryName = 'tiempo';
-    for (final category in ref.watch(categoriesProvider).value ?? const []) {
+    final categories =
+        ref.watch(categoriesProvider).value ?? const <ActivityCategory>[];
+    for (final category in categories) {
       if (category.id == running.session.categoryId) {
         categoryName = category.name;
       }

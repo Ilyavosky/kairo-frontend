@@ -22,14 +22,30 @@ void main() {
       record('hoy-2', DateTime(2026, 11, 24, 18), const Duration(minutes: 45)),
     ], now);
 
-    expect(groups.map((group) => group.title), ['Hoy', 'Ayer', 'Anteriores']);
+    expect(groups.map((group) => group.title), ['Hoy', 'Ayer', 'Vie 20 nov']);
     expect(groups[0].records.map((r) => r.id), ['hoy-2', 'hoy-1']);
     expect(groups[0].total, const Duration(minutes: 75));
     expect(groups[1].records.single.id, 'ayer');
     expect(groups[2].records.single.id, 'viejo');
   });
 
-  test('omite los grupos vacíos', () {
+  test('suma el tiempo de cada categoría en el día', () {
+    TimeRecord of(String category, DateTime start, Duration length) =>
+        record('r', start, length).copyWith(categoryId: category);
+
+    final groups = RecordGroups.of([
+      of('estudio', DateTime(2026, 11, 24, 8), const Duration(hours: 1)),
+      of('sueno', DateTime(2026, 11, 24), const Duration(hours: 7)),
+      of('estudio', DateTime(2026, 11, 24, 18), const Duration(minutes: 30)),
+    ], now);
+
+    expect(groups.single.categoryTotals, [
+      (categoryId: 'sueno', total: const Duration(hours: 7)),
+      (categoryId: 'estudio', total: const Duration(minutes: 90)),
+    ]);
+  });
+
+  test('omite los días sin registros', () {
     final groups = RecordGroups.of([
       record('ayer', DateTime(2026, 11, 23, 10), const Duration(hours: 1)),
     ], now);

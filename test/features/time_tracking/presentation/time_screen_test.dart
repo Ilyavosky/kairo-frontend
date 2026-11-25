@@ -171,4 +171,37 @@ void main() {
     expect(find.text(const NetworkException().message), findsOneWidget);
     expect(find.text('Reintentar'), findsOneWidget);
   });
+
+  testWidgets('iniciar con otra sesión activa avisa y muestra esa sesión', (
+    tester,
+  ) async {
+    final elsewhere = TimerSession(
+      id: 'sesion-bot',
+      categoryId: 'categoria-sueno',
+      startedAt: DateTime(2026, 11, 24, 19, 30),
+      elapsedSeconds: 600,
+    );
+    final api = await openTime(
+      tester,
+      timerApi: FakeTimerApi(startedElsewhere: elsewhere),
+    );
+
+    await tapVisible(tester, find.text('Sin actividad'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Reporte de práctica 3').last);
+    await tester.pumpAndSettle();
+    await tapVisible(tester, find.text('Iniciar'));
+    await settleFrames(tester);
+
+    expect(api.started, hasLength(1));
+    expect(
+      find.text(
+        'Ya tienes un temporizador en curso desde las 19:30. '
+        'Detenlo antes de iniciar otro.',
+      ),
+      findsOneWidget,
+    );
+    expect(find.text('Sueño'), findsOneWidget);
+    expect(find.text('Detener y guardar'), findsOneWidget);
+  });
 }

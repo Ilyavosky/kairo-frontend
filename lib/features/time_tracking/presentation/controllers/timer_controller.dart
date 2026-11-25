@@ -9,6 +9,8 @@ import 'package:kairo/features/time_tracking/domain/running_timer.dart';
 
 typedef StopResult = ({TimeRecord? record, AppException? error});
 
+typedef StartResult = ({TimerSession? alreadyRunning, AppException? error});
+
 class TimerController extends AsyncNotifier<TimerStatus> {
   @override
   Future<TimerStatus> build() async {
@@ -33,20 +35,23 @@ class TimerController extends AsyncNotifier<TimerStatus> {
     }
   }
 
-  Future<AppException?> start({
+  Future<StartResult> start({
     required String categoryId,
     String? activityId,
   }) async {
     try {
-      final session = await ref
+      final result = await ref
           .read(timerApiProvider)
           .start(categoryId: categoryId, activityId: activityId);
       if (ref.mounted) {
-        state = AsyncData(TimerStatus(running: _running(session)));
+        state = AsyncData(TimerStatus(running: _running(result.session)));
       }
-      return null;
+      return (
+        alreadyRunning: result.alreadyRunning ? result.session : null,
+        error: null,
+      );
     } on Exception catch (error) {
-      return toAppException(error);
+      return (alreadyRunning: null, error: toAppException(error));
     }
   }
 
