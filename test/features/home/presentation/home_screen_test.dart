@@ -52,12 +52,16 @@ void main() {
       subjectsApi: FakeSubjectsApi(subjects: [security]),
       activitiesApi: FakeActivitiesApi(
         activities: [
-          activity('a1', 'Reporte de práctica 3', today.add(
-            const Duration(hours: 23, minutes: 30),
-          )),
-          activity('a2', 'Fuera de la semana', today.add(
-            const Duration(days: 9),
-          )),
+          activity(
+            'a1',
+            'Reporte de práctica 3',
+            today.add(const Duration(hours: 23, minutes: 30)),
+          ),
+          activity(
+            'a2',
+            'Fuera de la semana',
+            today.add(const Duration(days: 9)),
+          ),
         ],
       ),
       calendarApi: FakeCalendarApi(
@@ -87,9 +91,11 @@ void main() {
       tester,
       activitiesApi: FakeActivitiesApi(
         activities: [
-          activity('a1', 'Reporte de práctica 3', today.add(
-            const Duration(hours: 23, minutes: 30),
-          )),
+          activity(
+            'a1',
+            'Reporte de práctica 3',
+            today.add(const Duration(hours: 23, minutes: 30)),
+          ),
         ],
       ),
     );

@@ -105,9 +105,7 @@ void main() {
     expect(find.text('Reporte de práctica 3'), findsOneWidget);
   });
 
-  testWidgets('al abrir recupera el temporizador del servidor', (
-    tester,
-  ) async {
+  testWidgets('al abrir recupera el temporizador del servidor', (tester) async {
     await openTime(
       tester,
       timerApi: FakeTimerApi(running: session(elapsedSeconds: 3725)),
