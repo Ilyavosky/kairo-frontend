@@ -8,13 +8,15 @@ class TimeRecordFormController extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {}
 
-  Future<bool> save({
-    required String recordId,
-    required TimeRecordInput input,
-  }) async {
+  Future<bool> save({required TimeRecordInput input, String? recordId}) async {
     state = const AsyncLoading();
     final result = await AsyncValue.guard(() async {
-      await ref.read(timeRecordsApiProvider).update(recordId, input);
+      final api = ref.read(timeRecordsApiProvider);
+      if (recordId == null) {
+        await api.create(input);
+      } else {
+        await api.update(recordId, input);
+      }
       ref.invalidate(timeRecordsProvider);
     });
     if (ref.mounted) {

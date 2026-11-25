@@ -51,6 +51,12 @@ void main() {
     }
   }
 
+  Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+    await tester.ensureVisible(finder);
+    await tester.pump(const Duration(milliseconds: 100));
+    await tester.tap(finder);
+  }
+
   Future<FakeTimerApi> openTime(
     WidgetTester tester, {
     FakeTimerApi? timerApi,
@@ -72,7 +78,7 @@ void main() {
 
     expect(find.text('00:00:00'), findsOneWidget);
 
-    await tester.tap(find.text('Iniciar'));
+    await tapVisible(tester, find.text('Iniciar'));
     await settleFrames(tester);
 
     expect(find.text('Elige qué vas a cronometrar'), findsOneWidget);
@@ -83,14 +89,14 @@ void main() {
   ) async {
     final api = await openTime(tester);
 
-    await tester.tap(find.text('Sin actividad'));
+    await tapVisible(tester, find.text('Sin actividad'));
     await tester.pumpAndSettle();
     await tester.tap(find.text('Reporte de práctica 3').last);
     await tester.pumpAndSettle();
 
     expect(find.text('Estudio'), findsOneWidget);
 
-    await tester.tap(find.text('Iniciar'));
+    await tapVisible(tester, find.text('Iniciar'));
     await settleFrames(tester);
 
     expect(api.started.single.categoryId, 'categoria-estudio');
@@ -99,7 +105,9 @@ void main() {
     expect(find.text('Reporte de práctica 3'), findsOneWidget);
   });
 
-  testWidgets('al abrir recupera el temporizador del servidor', (tester) async {
+  testWidgets('al abrir recupera el temporizador del servidor', (
+    tester,
+  ) async {
     await openTime(
       tester,
       timerApi: FakeTimerApi(running: session(elapsedSeconds: 3725)),
@@ -116,8 +124,10 @@ void main() {
       timerApi: FakeTimerApi(running: session(elapsedSeconds: 1500)),
     );
 
+    await tester.ensureVisible(find.byType(TextFormField));
+    await tester.pump(const Duration(milliseconds: 100));
     await tester.enterText(find.byType(TextFormField), 'Capítulo 3');
-    await tester.tap(find.text('Detener y guardar'));
+    await tapVisible(tester, find.text('Detener y guardar'));
     await settleFrames(tester);
 
     expect(api.stopNotes, ['Capítulo 3']);
@@ -136,7 +146,7 @@ void main() {
       ),
     );
 
-    await tester.tap(find.text('Detener y guardar'));
+    await tapVisible(tester, find.text('Detener y guardar'));
     await settleFrames(tester);
 
     expect(find.text('Detener y guardar'), findsOneWidget);

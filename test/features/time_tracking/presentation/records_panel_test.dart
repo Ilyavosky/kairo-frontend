@@ -147,4 +147,29 @@ void main() {
     expect(find.text(const NetworkException().message), findsOneWidget);
     expect(find.text('Reintentar'), findsOneWidget);
   });
+
+  testWidgets('el registro manual empieza vacío y pide categoría y horario', (
+    tester,
+  ) async {
+    final api = await openRecords(tester);
+
+    await tester.tap(find.byTooltip('Agregar tiempo manual'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Nuevo registro'), findsOneWidget);
+    expect(find.text('Elige la fecha y hora'), findsNWidgets(2));
+    expect(find.text('—'), findsOneWidget);
+
+    await tester.scrollUntilVisible(
+      find.text('Guardar registro'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.tap(find.text('Guardar registro'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Elige una categoría'), findsOneWidget);
+    expect(find.text('Indica cuándo empezó y cuándo terminó'), findsOneWidget);
+    expect(api.created, isEmpty);
+  });
 }

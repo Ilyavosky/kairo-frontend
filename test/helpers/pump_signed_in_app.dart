@@ -27,6 +27,7 @@ Future<MemoryTokenStorage> pumpSignedInApp(
   FakeCalendarApi? calendarApi,
   FakeTimerApi? timerApi,
   FakeTimeRecordsApi? timeRecordsApi,
+  bool settle = true,
 }) async {
   final storage = MemoryTokenStorage('token-guardado');
   await tester.pumpWidget(
@@ -53,6 +54,12 @@ Future<MemoryTokenStorage> pumpSignedInApp(
       child: const KairoApp(),
     ),
   );
-  await tester.pumpAndSettle();
+  if (settle) {
+    await tester.pumpAndSettle();
+  } else {
+    for (var i = 0; i < 10; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+  }
   return storage;
 }

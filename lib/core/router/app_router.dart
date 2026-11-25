@@ -89,9 +89,13 @@ final _timeRoute = GoRoute(
   builder: (context, state) => const TimeScreen(),
   routes: [
     GoRoute(
+      path: 'registro/nuevo',
+      builder: (context, state) => const TimeRecordFormScreen(),
+    ),
+    GoRoute(
       path: 'registro/:id',
       builder: (context, state) => TimeRecordFormScreen(
-        recordId: state.pathParameters['id'] ?? '',
+        recordId: state.pathParameters['id'],
         initial: state.extra is TimeRecord ? state.extra! as TimeRecord : null,
       ),
     ),

@@ -27,6 +27,16 @@ class TimeRecordsApi {
     });
   }
 
+  Future<TimeRecord> create(TimeRecordInput input) {
+    return _request(() async {
+      final response = await _dio.post<Map<String, dynamic>>(
+        _path,
+        data: input.toJson(),
+      );
+      return TimeRecord.fromJson(response.data ?? const {});
+    });
+  }
+
   Future<TimeRecord> update(String id, TimeRecordInput input) {
     return _request(() async {
       final response = await _dio.patch<Map<String, dynamic>>(

@@ -21,9 +21,9 @@ import 'package:kairo/features/time_tracking/presentation/controllers/timer_opti
 import 'package:kairo/features/time_tracking/presentation/widgets/date_time_picker.dart';
 
 class TimeRecordFormScreen extends ConsumerWidget {
-  const TimeRecordFormScreen({required this.recordId, this.initial, super.key});
+  const TimeRecordFormScreen({this.recordId, this.initial, super.key});
 
-  final String recordId;
+  final String? recordId;
   final TimeRecord? initial;
 
   @override
@@ -31,13 +31,20 @@ class TimeRecordFormScreen extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        KairoHeader(title: 'Editar registro', onBack: () => context.pop()),
-        Expanded(child: _body(ref)),
+        KairoHeader(
+          title: recordId == null ? 'Nuevo registro' : 'Editar registro',
+          onBack: () => context.pop(),
+        ),
+        Expanded(
+          child: recordId == null
+              ? const _TimeRecordForm()
+              : _body(ref, recordId!),
+        ),
       ],
     );
   }
 
-  Widget _body(WidgetRef ref) {
+  Widget _body(WidgetRef ref, String recordId) {
     final records = ref.watch(timeRecordsProvider);
     final list = records.value;
     TimeRecord? found;
@@ -67,9 +74,9 @@ class TimeRecordFormScreen extends ConsumerWidget {
 }
 
 class _TimeRecordForm extends ConsumerStatefulWidget {
-  const _TimeRecordForm({required this.record});
+  const _TimeRecordForm({this.record});
 
-  final TimeRecord record;
+  final TimeRecord? record;
 
   @override
   ConsumerState<_TimeRecordForm> createState() => _TimeRecordFormState();
@@ -78,21 +85,22 @@ class _TimeRecordForm extends ConsumerStatefulWidget {
 class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
   final _formKey = GlobalKey<FormState>();
   final _rangeFieldKey = GlobalKey<FormFieldState<String>>();
+  final _categoryFieldKey = GlobalKey<FormFieldState<String>>();
   late final TextEditingController _noteController;
-  late String _categoryId;
+  String? _categoryId;
   String? _activityId;
-  late DateTime _start;
-  late DateTime _end;
+  DateTime? _start;
+  DateTime? _end;
 
   @override
   void initState() {
     super.initState();
     final record = widget.record;
-    _noteController = TextEditingController(text: record.note);
-    _categoryId = record.categoryId;
-    _activityId = record.activityId;
-    _start = record.start.toLocal();
-    _end = record.end.toLocal();
+    _noteController = TextEditingController(text: record?.note);
+    _categoryId = record?.categoryId;
+    _activityId = record?.activityId;
+    _start = record?.start.toLocal();
+    _end = record?.end.toLocal();
   }
 
   @override
@@ -105,7 +113,7 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
     if (categories.isEmpty) {
       return;
     }
-    final choice = await showPickerSheet<String>(
+    final choice = await showPickerSheet<String?>(
       context,
       selected: _categoryId,
       options: [
@@ -115,6 +123,9 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
     );
     if (choice != null && mounted) {
       setState(() => _categoryId = choice.value);
+      if (_categoryFieldKey.currentState?.hasError ?? false) {
+        _categoryFieldKey.currentState?.validate();
+      }
     }
   }
 
@@ -128,13 +139,31 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
           PickerOption(activity.id, activity.title),
       ],
     );
-    if (choice != null && mounted) {
-      setState(() => _activityId = choice.value);
+    if (choice == null || !mounted) {
+      return;
+    }
+    String? activityCategory;
+    for (final activity in activities) {
+      if (activity.id == choice.value) {
+        activityCategory = activity.categoryId;
+      }
+    }
+    setState(() {
+      _activityId = choice.value;
+      _categoryId ??= activityCategory;
+    });
+    if (activityCategory != null &&
+        (_categoryFieldKey.currentState?.hasError ?? false)) {
+      _categoryFieldKey.currentState?.validate();
     }
   }
 
   Future<void> _pickStart() async {
-    final value = await pickDateTime(context, initial: _start, title: 'Inicio');
+    final value = await pickDateTime(
+      context,
+      initial: _start ?? _currentMinute().subtract(const Duration(hours: 1)),
+      title: 'Inicio',
+    );
     if (value != null && mounted) {
       setState(() => _start = value);
       _revalidateRange();
@@ -142,11 +171,24 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
   }
 
   Future<void> _pickEnd() async {
-    final value = await pickDateTime(context, initial: _end, title: 'Fin');
+    final now = _currentMinute();
+    final suggested = _start?.add(const Duration(hours: 1));
+    final value = await pickDateTime(
+      context,
+      initial:
+          _end ??
+          (suggested != null && suggested.isBefore(now) ? suggested : now),
+      title: 'Fin',
+    );
     if (value != null && mounted) {
       setState(() => _end = value);
       _revalidateRange();
     }
+  }
+
+  DateTime _currentMinute() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, now.hour, now.minute);
   }
 
   void _revalidateRange() {
@@ -157,19 +199,25 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
 
   Future<void> _save() async {
     FocusScope.of(context).unfocus();
-    if (!(_formKey.currentState?.validate() ?? false)) {
+    final categoryId = _categoryId;
+    final start = _start;
+    final end = _end;
+    if (!(_formKey.currentState?.validate() ?? false) ||
+        categoryId == null ||
+        start == null ||
+        end == null) {
       return;
     }
     final note = _noteController.text.trim();
     final saved = await ref
         .read(timeRecordFormControllerProvider.notifier)
         .save(
-          recordId: widget.record.id,
+          recordId: widget.record?.id,
           input: TimeRecordInput(
-            categoryId: _categoryId,
+            categoryId: categoryId,
             activityId: _activityId,
-            start: _start.toUtc(),
-            end: _end.toUtc(),
+            start: start.toUtc(),
+            end: end.toUtc(),
             note: note.isEmpty ? null : note,
           ),
         );
@@ -202,7 +250,11 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
         activityTitle = activity.title;
       }
     }
-    final duration = _end.difference(_start);
+    final start = _start;
+    final end = _end;
+    final duration = start == null || end == null
+        ? null
+        : end.difference(start);
 
     return Form(
       key: _formKey,
@@ -217,7 +269,9 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(
-              duration.isNegative || duration == Duration.zero
+              duration == null ||
+                      duration.isNegative ||
+                      duration == Duration.zero
                   ? '—'
                   : DurationFormat.short(duration),
               textAlign: TextAlign.center,
@@ -230,7 +284,9 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
               label: 'Categoría',
               placeholder: 'Selecciona una categoría',
               icon: Icons.category_outlined,
+              fieldKey: _categoryFieldKey,
               value: categoryName,
+              validator: () => TimeRecordValidator.category(_categoryId),
               onTap: () => _pickCategory(categories),
               enabled: !loading,
             ),
@@ -249,7 +305,7 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
               label: 'Inicio',
               placeholder: 'Elige la fecha y hora',
               icon: Icons.play_circle_outline,
-              value: dateTimeLabel(_start),
+              value: start == null ? null : dateTimeLabel(start),
               onTap: _pickStart,
               enabled: !loading,
             ),
@@ -259,12 +315,12 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
               placeholder: 'Elige la fecha y hora',
               icon: Icons.stop_circle_outlined,
               fieldKey: _rangeFieldKey,
-              value: dateTimeLabel(_end),
+              value: end == null ? null : dateTimeLabel(end),
               validator: () => TimeRecordValidator.range(
                 _start,
                 _end,
                 DateTime.now(),
-                originalEnd: widget.record.end.toLocal(),
+                originalEnd: widget.record?.end.toLocal(),
               ),
               onTap: _pickEnd,
               enabled: !loading,
@@ -296,7 +352,11 @@ class _TimeRecordFormState extends ConsumerState<_TimeRecordForm> {
                         semanticsLabel: 'Guardando',
                       ),
                     )
-                  : const Text('Guardar cambios'),
+                  : Text(
+                      widget.record == null
+                          ? 'Guardar registro'
+                          : 'Guardar cambios',
+                    ),
             ),
           ],
         ),

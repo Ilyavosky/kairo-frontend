@@ -21,11 +21,34 @@ class RecordsPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final records = ref.watch(timeRecordsProvider);
 
+    return Stack(
+      children: [
+        Positioned.fill(child: _content(context, ref, records)),
+        Positioned(
+          right: KairoSpacing.page,
+          bottom: KairoSpacing.lg,
+          child: FloatingActionButton(
+            onPressed: () => context.go(AppRoutes.newTimeRecord),
+            tooltip: 'Agregar tiempo manual',
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _content(
+    BuildContext context,
+    WidgetRef ref,
+    AsyncValue<List<TimeRecord>> records,
+  ) {
     return switch (records) {
       AsyncData(:final value) when value.isEmpty => const EmptyState(
         icon: Icons.history,
         title: 'Aún no tienes registros',
-        message: 'Inicia el temporizador para guardar tu primer registro.',
+        message:
+            'Inicia el temporizador o agrega con el botón + el tiempo '
+            'que ya dedicaste.',
       ),
       AsyncData(:final value) => _RecordList(records: value),
       AsyncError(:final error) => ErrorView(
@@ -65,7 +88,7 @@ class _RecordList extends ConsumerWidget {
           KairoSpacing.page,
           KairoSpacing.md,
           KairoSpacing.page,
-          KairoSpacing.xl,
+          96,
         ),
         children: [
           for (final group in groups) ...[
