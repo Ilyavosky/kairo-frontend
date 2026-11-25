@@ -1,14 +1,18 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kairo/core/errors/app_exception.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
+import 'package:kairo/features/activities/data/models/activity_category.dart';
 import 'package:kairo/features/activities/domain/activity_modality.dart';
 import 'package:kairo/features/activities/domain/activity_status.dart';
 import 'package:kairo/features/home/data/models/calendar_event.dart';
 import 'package:kairo/features/subjects/data/models/subject.dart';
+import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
 
 import '../../../helpers/fake_activities_api.dart';
 import '../../../helpers/fake_calendar_api.dart';
+import '../../../helpers/fake_categories_api.dart';
 import '../../../helpers/fake_subjects_api.dart';
+import '../../../helpers/fake_timer_api.dart';
 import '../../../helpers/pump_signed_in_app.dart';
 
 void main() {
@@ -113,5 +117,46 @@ void main() {
 
     expect(find.text(const NetworkException().message), findsOneWidget);
     expect(find.text('Reintentar'), findsOneWidget);
+  });
+
+  testWidgets('con un temporizador corriendo lo muestra y lo detiene', (
+    tester,
+  ) async {
+    final timerApi = FakeTimerApi(
+      running: TimerSession(
+        id: 'sesion-1',
+        categoryId: 'categoria-estudio',
+        startedAt: now.subtract(const Duration(minutes: 20)),
+        elapsedSeconds: 1200,
+      ),
+    );
+    await pumpSignedInApp(
+      tester,
+      timerApi: timerApi,
+      categoriesApi: FakeCategoriesApi(
+        categories: const [
+          ActivityCategory(
+            id: 'categoria-estudio',
+            name: 'Estudio',
+            scope: 'ambas',
+            system: true,
+          ),
+        ],
+      ),
+      settle: false,
+    );
+
+    expect(find.text('Cronometrando Estudio'), findsOneWidget);
+    expect(find.text('00:20:00'), findsOneWidget);
+
+    await tester.ensureVisible(find.text('Detener'));
+    await tester.tap(find.text('Detener'));
+    for (var i = 0; i < 5; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+
+    expect(timerApi.stopNotes, hasLength(1));
+    expect(find.text('Cronometrando Estudio'), findsNothing);
+    expect(find.text('Guardado: 20 min de Estudio.'), findsOneWidget);
   });
 }

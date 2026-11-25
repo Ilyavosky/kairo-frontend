@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/router/app_routes.dart';
+import 'package:kairo/core/router/app_section.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/error_view.dart';
 import 'package:kairo/core/widgets/kairo_header.dart';
@@ -10,6 +11,7 @@ import 'package:kairo/features/home/domain/agenda.dart';
 import 'package:kairo/features/home/presentation/controllers/agenda_controller.dart';
 import 'package:kairo/features/home/presentation/widgets/agenda_day_section.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
+import 'package:kairo/features/time_tracking/presentation/widgets/running_timer_card.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -65,6 +67,7 @@ class _AgendaList extends ConsumerWidget {
           KairoSpacing.xl,
         ),
         children: [
+          RunningTimerCard(timePath: AppSection.time.path),
           Text('Próximos 7 días', style: theme.textTheme.titleLarge),
           const SizedBox(height: KairoSpacing.xs),
           Text(switch (pending) {
