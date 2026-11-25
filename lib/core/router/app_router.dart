@@ -17,6 +17,7 @@ import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
+import 'package:kairo/features/time_tracking/presentation/screens/time_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final session = ValueNotifier<AsyncValue<bool>>(const AsyncLoading());
@@ -59,6 +60,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                   _activitiesRoute
                 else if (section == AppSection.home)
                   _homeRoute
+                else if (section == AppSection.time)
+                  GoRoute(
+                    path: section.path,
+                    builder: (context, state) => const TimeScreen(),
+                  )
                 else
                   GoRoute(
                     path: section.path,
