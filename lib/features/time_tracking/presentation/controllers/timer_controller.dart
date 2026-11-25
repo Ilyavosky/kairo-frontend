@@ -3,6 +3,7 @@ import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/errors/app_exception.dart';
 import 'package:kairo/features/time_tracking/data/models/time_record.dart';
 import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
+import 'package:kairo/features/time_tracking/data/time_records_api.dart';
 import 'package:kairo/features/time_tracking/data/timer_api.dart';
 import 'package:kairo/features/time_tracking/domain/running_timer.dart';
 
@@ -52,6 +53,7 @@ class TimerController extends AsyncNotifier<TimerStatus> {
   Future<StopResult> stop({String? note}) async {
     try {
       final record = await ref.read(timerApiProvider).stop(note: note);
+      ref.invalidate(timeRecordsProvider);
       if (ref.mounted) {
         state = const AsyncData(TimerStatus());
       }

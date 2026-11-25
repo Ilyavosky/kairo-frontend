@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kairo/core/widgets/kairo_header.dart';
 import 'package:kairo/features/time_tracking/presentation/controllers/timer_controller.dart';
+import 'package:kairo/features/time_tracking/presentation/widgets/records_panel.dart';
 import 'package:kairo/features/time_tracking/presentation/widgets/timer_panel.dart';
 
 class TimeScreen extends ConsumerStatefulWidget {
@@ -30,12 +31,21 @@ class _TimeScreenState extends ConsumerState<TimeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        KairoHeader(title: 'Tiempo'),
-        Expanded(child: TimerPanel()),
-      ],
+    return const DefaultTabController(
+      length: 2,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          KairoHeader(title: 'Tiempo'),
+          TabBar(
+            tabs: [
+              Tab(text: 'Temporizador'),
+              Tab(text: 'Registros'),
+            ],
+          ),
+          Expanded(child: TabBarView(children: [TimerPanel(), RecordsPanel()])),
+        ],
+      ),
     );
   }
 }

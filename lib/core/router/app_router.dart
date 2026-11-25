@@ -17,6 +17,8 @@ import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
+import 'package:kairo/features/time_tracking/data/models/time_record.dart';
+import 'package:kairo/features/time_tracking/presentation/screens/time_record_form_screen.dart';
 import 'package:kairo/features/time_tracking/presentation/screens/time_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
@@ -61,10 +63,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 else if (section == AppSection.home)
                   _homeRoute
                 else if (section == AppSection.time)
-                  GoRoute(
-                    path: section.path,
-                    builder: (context, state) => const TimeScreen(),
-                  )
+                  _timeRoute
                 else
                   GoRoute(
                     path: section.path,
@@ -84,6 +83,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   });
   return router;
 });
+
+final _timeRoute = GoRoute(
+  path: AppSection.time.path,
+  builder: (context, state) => const TimeScreen(),
+  routes: [
+    GoRoute(
+      path: 'registro/:id',
+      builder: (context, state) => TimeRecordFormScreen(
+        recordId: state.pathParameters['id'] ?? '',
+        initial: state.extra is TimeRecord ? state.extra! as TimeRecord : null,
+      ),
+    ),
+  ],
+);
 
 final _homeRoute = GoRoute(
   path: AppSection.home.path,
