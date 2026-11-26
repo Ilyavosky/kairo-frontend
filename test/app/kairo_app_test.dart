@@ -6,11 +6,15 @@ import 'package:kairo/core/api/models/health_status.dart';
 import 'package:kairo/core/errors/app_exception.dart';
 import 'package:kairo/core/storage/token_storage.dart';
 import 'package:kairo/features/activities/data/activities_api.dart';
+import 'package:kairo/features/activities/data/categories_api.dart';
+import 'package:kairo/features/goals/data/goals_api.dart';
 import 'package:kairo/features/home/data/calendar_api.dart';
 import 'package:kairo/features/time_tracking/data/timer_api.dart';
 
 import '../helpers/fake_activities_api.dart';
 import '../helpers/fake_calendar_api.dart';
+import '../helpers/fake_categories_api.dart';
+import '../helpers/fake_goals_api.dart';
 import '../helpers/fake_timer_api.dart';
 import '../helpers/memory_token_storage.dart';
 
@@ -28,6 +32,8 @@ void main() {
           activitiesApiProvider.overrideWithValue(FakeActivitiesApi()),
           calendarApiProvider.overrideWithValue(FakeCalendarApi()),
           timerApiProvider.overrideWithValue(FakeTimerApi()),
+          goalsApiProvider.overrideWithValue(FakeGoalsApi()),
+          categoriesApiProvider.overrideWithValue(FakeCategoriesApi()),
           healthStatusProvider.overrideWith(
             (ref) =>
                 health?.call() ??

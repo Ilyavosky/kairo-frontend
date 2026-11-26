@@ -6,6 +6,7 @@ import 'package:kairo/core/api/models/health_status.dart';
 import 'package:kairo/core/storage/token_storage.dart';
 import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
+import 'package:kairo/features/goals/data/goals_api.dart';
 import 'package:kairo/features/home/data/calendar_api.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
 import 'package:kairo/features/time_tracking/data/time_records_api.dart';
@@ -14,6 +15,7 @@ import 'package:kairo/features/time_tracking/data/timer_api.dart';
 import 'fake_activities_api.dart';
 import 'fake_calendar_api.dart';
 import 'fake_categories_api.dart';
+import 'fake_goals_api.dart';
 import 'fake_subjects_api.dart';
 import 'fake_time_records_api.dart';
 import 'fake_timer_api.dart';
@@ -27,6 +29,7 @@ Future<MemoryTokenStorage> pumpSignedInApp(
   FakeCalendarApi? calendarApi,
   FakeTimerApi? timerApi,
   FakeTimeRecordsApi? timeRecordsApi,
+  FakeGoalsApi? goalsApi,
   bool settle = true,
 }) async {
   final storage = MemoryTokenStorage('token-guardado');
@@ -47,6 +50,7 @@ Future<MemoryTokenStorage> pumpSignedInApp(
         timeRecordsApiProvider.overrideWithValue(
           timeRecordsApi ?? FakeTimeRecordsApi(),
         ),
+        goalsApiProvider.overrideWithValue(goalsApi ?? FakeGoalsApi()),
         healthStatusProvider.overrideWith(
           (ref) => Future.value(const HealthStatus(status: 'healthy')),
         ),

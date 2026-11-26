@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/router/app_section.dart';
 import 'package:kairo/core/router/app_shell.dart';
-import 'package:kairo/core/router/section_placeholder.dart';
 import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
@@ -13,6 +12,7 @@ import 'package:kairo/features/activities/presentation/screens/activities_screen
 import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
+import 'package:kairo/features/goals/presentation/screens/goals_screen.dart';
 import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
@@ -67,8 +67,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
                 else
                   GoRoute(
                     path: section.path,
-                    builder: (context, state) =>
-                        SectionPlaceholder(section: section),
+                    builder: (context, state) => const GoalsScreen(),
                   ),
               ],
             ),
