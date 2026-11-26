@@ -12,6 +12,7 @@ import 'package:kairo/features/activities/presentation/screens/activities_screen
 import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
+import 'package:kairo/features/capture/presentation/screens/capture_screen.dart';
 import 'package:kairo/features/goals/data/models/goal.dart';
 import 'package:kairo/features/goals/presentation/controllers/goals_controller.dart';
 import 'package:kairo/features/goals/presentation/screens/goal_detail_screen.dart';
@@ -132,6 +133,18 @@ final _homeRoute = GoRoute(
   path: AppSection.home.path,
   builder: (context, state) => const HomeScreen(),
   routes: [
+    GoRoute(
+      path: 'capturar',
+      builder: (context, state) => const CaptureScreen(),
+      routes: [
+        GoRoute(
+          path: 'manual',
+          builder: (context, state) => ActivityFormScreen(
+            draftText: state.extra is String ? state.extra! as String : null,
+          ),
+        ),
+      ],
+    ),
     GoRoute(
       path: 'actividad/:id',
       builder: (context, state) => ActivityFormScreen(

@@ -24,6 +24,18 @@ class HomeScreen extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const KairoHeader(title: 'Inicio'),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            KairoSpacing.page,
+            0,
+            KairoSpacing.page,
+            KairoSpacing.sm,
+          ),
+          child: FilledButton.tonal(
+            onPressed: () => context.go(AppRoutes.capture),
+            child: const Text('Capturar un mensaje'),
+          ),
+        ),
         Expanded(
           child: switch (agenda) {
             AsyncData(:final value) => _AgendaList(days: value),

@@ -16,6 +16,15 @@ subprojects {
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
 subprojects {
+    if (name == "receive_sharing_intent") {
+        afterEvaluate {
+            extensions.getByName("android").withGroovyBuilder {
+                setProperty("compileSdk", 36)
+            }
+        }
+    }
+}
+subprojects {
     project.evaluationDependsOn(":app")
 }
 

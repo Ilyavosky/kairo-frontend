@@ -22,10 +22,16 @@ import 'package:kairo/features/subjects/data/models/subject.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
 
 class ActivityFormScreen extends ConsumerWidget {
-  const ActivityFormScreen({this.activityId, this.initial, super.key});
+  const ActivityFormScreen({
+    this.activityId,
+    this.initial,
+    this.draftText,
+    super.key,
+  });
 
   final String? activityId;
   final Activity? initial;
+  final String? draftText;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +43,9 @@ class ActivityFormScreen extends ConsumerWidget {
       children: [
         KairoHeader(title: title, onBack: () => context.pop()),
         Expanded(
-          child: id == null ? const _ActivityForm() : _existing(ref, id),
+          child: id == null
+              ? _ActivityForm(draftText: draftText)
+              : _existing(ref, id),
         ),
       ],
     );
@@ -73,9 +81,10 @@ class ActivityFormScreen extends ConsumerWidget {
 }
 
 class _ActivityForm extends ConsumerStatefulWidget {
-  const _ActivityForm({this.activity});
+  const _ActivityForm({this.activity, this.draftText});
 
   final Activity? activity;
+  final String? draftText;
 
   @override
   ConsumerState<_ActivityForm> createState() => _ActivityFormState();
@@ -96,13 +105,28 @@ class _ActivityFormState extends ConsumerState<_ActivityForm> {
   void initState() {
     super.initState();
     final activity = widget.activity;
-    _titleController = TextEditingController(text: activity?.title);
-    _descriptionController = TextEditingController(text: activity?.description);
+    final draft = activity == null ? widget.draftText?.trim() : null;
+    _titleController = TextEditingController(
+      text: activity?.title ?? _titleFromDraft(draft),
+    );
+    _descriptionController = TextEditingController(
+      text: activity?.description ?? draft,
+    );
     _subjectId = activity?.subjectId;
     _categoryId = activity?.categoryId;
     _dueAt = activity?.dueAt?.toLocal();
     _priority = activity?.priority ?? 3;
     _modality = activity?.modality ?? ActivityModality.inPerson;
+  }
+
+  String? _titleFromDraft(String? draft) {
+    if (draft == null || draft.isEmpty) {
+      return null;
+    }
+    final line = draft.split('\n').first.trim();
+    return line.length > ActivityValidator.titleMaxLength
+        ? line.substring(0, ActivityValidator.titleMaxLength)
+        : line;
   }
 
   @override
@@ -217,7 +241,7 @@ class _ActivityFormState extends ConsumerState<_ActivityForm> {
           ),
         );
     if (saved && mounted) {
-      context.pop();
+      context.pop(true);
     }
   }
 
