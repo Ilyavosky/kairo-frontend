@@ -9,6 +9,7 @@ import 'package:kairo/features/capture/data/models/capture.dart';
 import 'package:kairo/features/capture/data/shared_text_source.dart';
 import 'package:kairo/features/capture/domain/capture_validator.dart';
 import 'package:kairo/features/capture/presentation/controllers/capture_controller.dart';
+import 'package:kairo/features/capture/presentation/widgets/capture_correction_form.dart';
 import 'package:kairo/features/capture/presentation/widgets/capture_review_card.dart';
 
 class CaptureScreen extends ConsumerStatefulWidget {
@@ -21,6 +22,7 @@ class CaptureScreen extends ConsumerStatefulWidget {
 class _CaptureScreenState extends ConsumerState<CaptureScreen> {
   final _formKey = GlobalKey<FormState>();
   final _textController = TextEditingController();
+  var _correcting = false;
 
   @override
   void initState() {
@@ -71,9 +73,16 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
         .submit(_textController.text);
   }
 
-  Future<void> _confirm() async {
+  Future<void> _confirm() =>
+      _finish(ref.read(captureControllerProvider.notifier).confirm);
+
+  Future<void> _saveCorrection(Map<String, dynamic> fields) => _finish(
+    () => ref.read(captureControllerProvider.notifier).correct(fields),
+  );
+
+  Future<void> _finish(Future<Capture?> Function() action) async {
     final messenger = ScaffoldMessenger.of(context);
-    final result = await ref.read(captureControllerProvider.notifier).confirm();
+    final result = await action();
     if (result != null && mounted) {
       context.pop();
       messenger
@@ -89,6 +98,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
   Future<void> _discard() async {
     final result = await ref.read(captureControllerProvider.notifier).discard();
     if (result != null && mounted) {
+      setState(() => _correcting = false);
       _textController.clear();
       ref.read(captureControllerProvider.notifier).startOver();
       _showMessage('Mensaje descartado. Puedes escribir otro.');
@@ -104,6 +114,7 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
       final text = ref.read(pendingSharedTextProvider.notifier).take();
       if (text != null) {
         _textController.text = text;
+        setState(() => _correcting = false);
         ref.read(captureControllerProvider.notifier).startOver();
       }
     });
@@ -191,26 +202,49 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
 
   Widget _review(BuildContext context, CaptureState state, Capture capture) {
     final error = state.error;
+    final message = error == null
+        ? null
+        : Padding(
+            padding: const EdgeInsets.only(top: KairoSpacing.md),
+            child: FormErrorMessage(message: error.message),
+          );
+
+    if (_correcting) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          CaptureCorrectionForm(
+            capture: capture,
+            busy: state.busy,
+            onSave: _saveCorrection,
+            onCancel: () => setState(() => _correcting = false),
+          ),
+          ?message,
+        ],
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         CaptureReviewCard(capture: capture),
-        if (error != null) ...[
-          const SizedBox(height: KairoSpacing.md),
-          FormErrorMessage(message: error.message),
-        ],
+        ?message,
         const SizedBox(height: KairoSpacing.lg),
-        FilledButton.icon(
+        FilledButton(
           onPressed: state.busy ? null : _confirm,
-          icon: const Icon(Icons.check),
-          label: const Text('Confirmar'),
+          child: const Text('Confirmar'),
         ),
         const SizedBox(height: KairoSpacing.sm),
-        OutlinedButton.icon(
+        OutlinedButton(
+          onPressed: state.busy
+              ? null
+              : () => setState(() => _correcting = true),
+          child: const Text('Corregir'),
+        ),
+        const SizedBox(height: KairoSpacing.sm),
+        TextButton(
           onPressed: state.busy ? null : _discard,
-          icon: const Icon(Icons.close),
-          label: const Text('Rechazar'),
+          child: const Text('Rechazar'),
         ),
       ],
     );

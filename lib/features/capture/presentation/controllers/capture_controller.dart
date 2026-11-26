@@ -42,6 +42,10 @@ class CaptureController extends Notifier<CaptureState> {
   Future<Capture?> confirm() =>
       _close((api, id) => api.confirm(id), refresh: true);
 
+  Future<Capture?> correct(Map<String, dynamic> fields) => fields.isEmpty
+      ? confirm()
+      : _close((api, id) => api.correct(id, fields), refresh: true);
+
   Future<Capture?> discard() =>
       _close((api, id) => api.discard(id), refresh: false);
 

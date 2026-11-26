@@ -64,6 +64,8 @@ void main() {
   }
 
   Future<void> tapVisible(WidgetTester tester, Finder finder) async {
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
     await tester.ensureVisible(finder);
     await tester.pumpAndSettle();
     await tester.tap(finder);
@@ -199,5 +201,71 @@ void main() {
     final field = tester.widget<TextFormField>(find.byType(TextFormField));
     expect(field.controller?.text, 'Junta del equipo el lunes');
     expect(shared.resets, greaterThan(0));
+  });
+
+  Future<void> openCorrection(WidgetTester tester, FakeCaptureApi api) async {
+    await openCapture(tester, api: api);
+    await tester.enterText(find.byType(TextFormField), 'Entregar reporte');
+    await tapVisible(tester, find.text('Interpretar mensaje'));
+    await tapVisible(tester, find.text('Corregir'));
+  }
+
+  testWidgets('corregir manda solo el campo que cambió', (tester) async {
+    final api = FakeCaptureApi(proposal: proposal);
+    await openCorrection(tester, api);
+
+    expect(find.text('Corregir actividad'), findsOneWidget);
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Entregar reporte de redes'),
+      'Entregar reporte final de redes',
+    );
+    await tapVisible(tester, find.text('3 · Media'));
+    await tapVisible(tester, find.text('5 · Muy alta'));
+    await tapVisible(tester, find.text('Guardar corrección'));
+
+    expect(api.corrections, {
+      'captura-1': {
+        'titulo': 'Entregar reporte final de redes',
+        'prioridad': 5,
+      },
+    });
+    expect(api.confirmed, isEmpty);
+    expect(find.text('Guardado como actividad.'), findsOneWidget);
+  });
+
+  testWidgets('guardar sin cambios confirma la propuesta', (tester) async {
+    final api = FakeCaptureApi(proposal: proposal);
+    await openCorrection(tester, api);
+
+    await tapVisible(tester, find.text('Guardar corrección'));
+
+    expect(api.corrections, isEmpty);
+    expect(api.confirmed, ['captura-1']);
+  });
+
+  testWidgets('cancelar la corrección regresa a la tarjeta', (tester) async {
+    final api = FakeCaptureApi(proposal: proposal);
+    await openCorrection(tester, api);
+
+    await tapVisible(tester, find.text('Cancelar'));
+
+    expect(find.text('Corregir actividad'), findsNothing);
+    expect(find.text('Confirmar'), findsOneWidget);
+    expect(api.corrections, isEmpty);
+  });
+
+  testWidgets('el título no puede quedar vacío al corregir', (tester) async {
+    final api = FakeCaptureApi(proposal: proposal);
+    await openCorrection(tester, api);
+
+    await tester.enterText(
+      find.widgetWithText(TextFormField, 'Entregar reporte de redes'),
+      '',
+    );
+    await tapVisible(tester, find.text('Guardar corrección'));
+
+    expect(find.text('Escribe el título de la actividad'), findsOneWidget);
+    expect(api.corrections, isEmpty);
+    expect(api.confirmed, isEmpty);
   });
 }

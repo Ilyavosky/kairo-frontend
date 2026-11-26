@@ -51,18 +51,18 @@ abstract final class CaptureFields {
     'objetivo': 'Objetivo',
   };
 
-  static const Map<String, ActivityModality> _modalities = {
+  static const Map<String, ActivityModality> modalities = {
     'presencial': ActivityModality.inPerson,
     'en_linea': ActivityModality.online,
     'mixta': ActivityModality.hybrid,
   };
 
-  static const Map<String, GoalType> _goalTypes = {
+  static const Map<String, GoalType> goalTypes = {
     'tiempo_acumulado': GoalType.time,
     'numero_eventos': GoalType.events,
   };
 
-  static const Map<String, GoalPeriod> _goalPeriods = {
+  static const Map<String, GoalPeriod> goalPeriods = {
     'dia': GoalPeriod.day,
     'semana': GoalPeriod.week,
     'mes': GoalPeriod.month,
@@ -76,6 +76,12 @@ abstract final class CaptureFields {
           key,
     ];
   }
+
+  static List<String> editableKeysOf(CaptureKind kind) =>
+      _order[kind] ?? const <String>[];
+
+  static bool isDate(String key) =>
+      key == 'vence_en' || key == 'inicio' || key == 'fin';
 
   static String label(String key) => _labels[key] ?? key;
 
@@ -92,11 +98,11 @@ abstract final class CaptureFields {
       'categoria_id' => lookups.categories[value] ?? 'Categoría',
       'materia_id' => lookups.subjects[value] ?? 'Materia',
       'actividad_id' => lookups.activities[value] ?? 'Actividad',
-      'vence_en' || 'inicio' || 'fin' => _dateTime(value),
+      _ when isDate(key) => _dateTime(value),
       'prioridad' => _priority(value),
-      'modalidad' => _modalities[value]?.label ?? '$value',
-      'tipo' => _goalTypes[value]?.label ?? '$value',
-      'periodo' => _goalPeriods[value]?.label ?? '$value',
+      'modalidad' => modalities[value]?.label ?? '$value',
+      'tipo' => goalTypes[value]?.label ?? '$value',
+      'periodo' => goalPeriods[value]?.label ?? '$value',
       'objetivo' => _target(capture, value),
       _ => '$value',
     };
@@ -118,7 +124,7 @@ abstract final class CaptureFields {
   }
 
   static String _target(Capture capture, Object value) {
-    final type = _goalTypes[capture.fields['tipo']];
+    final type = goalTypes[capture.fields['tipo']];
     final amount = value is num ? value : num.tryParse('$value');
     if (type == null || amount == null) {
       return '$value';
