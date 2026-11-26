@@ -39,6 +39,21 @@ class GoalsApi {
     });
   }
 
+  Future<Goal> deactivate(String goalId) => _patch(goalId, {'activa': false});
+
+  Future<Goal> updateTarget(String goalId, int target) =>
+      _patch(goalId, {'objetivo': target});
+
+  Future<Goal> _patch(String goalId, Map<String, dynamic> body) {
+    return _request(() async {
+      final response = await _dio.patch<Map<String, dynamic>>(
+        '$_path/$goalId',
+        data: body,
+      );
+      return Goal.fromJson(response.data ?? const {});
+    });
+  }
+
   Future<GoalProgress> progress(String goalId) {
     return _request(() async {
       final response = await _dio.get<Map<String, dynamic>>(

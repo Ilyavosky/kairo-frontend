@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
+import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/empty_state.dart';
 import 'package:kairo/core/widgets/error_view.dart';
@@ -43,10 +45,17 @@ class GoalHistoryPanel extends ConsumerWidget {
           ),
           itemCount: value.length,
           separatorBuilder: (_, _) => const SizedBox(height: KairoSpacing.sm),
-          itemBuilder: (context, index) => GoalHistoryTile(
-            entry: value[index],
-            categoryName: names[value[index].goal?.categoryId],
-          ),
+          itemBuilder: (context, index) {
+            final entry = value[index];
+            final goal = entry.goal;
+            return GoalHistoryTile(
+              entry: entry,
+              categoryName: names[goal?.categoryId],
+              onTap: goal == null
+                  ? null
+                  : () => context.go(AppRoutes.goal(goal.id)),
+            );
+          },
         ),
       ),
       AsyncError(:final error) => ErrorView(
@@ -64,11 +73,13 @@ class GoalHistoryTile extends StatelessWidget {
   const GoalHistoryTile({
     required this.entry,
     required this.categoryName,
+    this.onTap,
     super.key,
   });
 
   final GoalHistoryEntry entry;
   final String? categoryName;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -79,45 +90,49 @@ class GoalHistoryTile extends StatelessWidget {
     final period = goal?.period ?? GoalPeriod.week;
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(KairoSpacing.md),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    categoryName ?? 'Meta',
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: KairoSpacing.xs),
-                  Text(
-                    GoalFormat.periodRange(
-                      period,
-                      evaluation.periodStart,
-                      evaluation.periodEnd,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(KairoSpacing.md),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      categoryName ?? 'Meta',
+                      style: theme.textTheme.titleSmall,
                     ),
-                    style: theme.textTheme.bodySmall,
-                  ),
-                  const SizedBox(height: KairoSpacing.xs),
-                  Text(
-                    GoalFormat.progress(
-                      type,
-                      evaluation.achievedValue,
-                      evaluation.target,
+                    const SizedBox(height: KairoSpacing.xs),
+                    Text(
+                      GoalFormat.periodRange(
+                        period,
+                        evaluation.periodStart,
+                        evaluation.periodEnd,
+                      ),
+                      style: theme.textTheme.bodySmall,
                     ),
-                    style: theme.textTheme.bodySmall,
-                  ),
-                ],
+                    const SizedBox(height: KairoSpacing.xs),
+                    Text(
+                      GoalFormat.progress(
+                        type,
+                        evaluation.achievedValue,
+                        evaluation.target,
+                      ),
+                      style: theme.textTheme.bodySmall,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            GoalStatus(
-              achieved: evaluation.achieved,
-              pendingLabel: 'No cumplida',
-              pendingIcon: Icons.cancel_outlined,
-            ),
-          ],
+              GoalStatus(
+                achieved: evaluation.achieved,
+                pendingLabel: 'No cumplida',
+                pendingIcon: Icons.cancel_outlined,
+              ),
+            ],
+          ),
         ),
       ),
     );

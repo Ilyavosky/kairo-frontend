@@ -19,6 +19,8 @@ class FakeGoalsApi implements GoalsApi {
   final Map<String, GoalProgress> _progress;
   final Exception? createError;
   final List<GoalInput> created = [];
+  final List<String> deactivated = [];
+  final Map<String, int> updatedTargets = {};
   final List<GoalEvaluation> evaluations;
   final Exception? listError;
 
@@ -60,6 +62,31 @@ class FakeGoalsApi implements GoalsApi {
       percent: 0,
       achieved: false,
     );
+    return goal;
+  }
+
+  @override
+  Future<Goal> deactivate(String goalId) async {
+    deactivated.add(goalId);
+    final index = _goals.indexWhere((goal) => goal.id == goalId);
+    final goal = _goals[index].copyWith(active: false);
+    _goals[index] = goal;
+    return goal;
+  }
+
+  @override
+  Future<Goal> updateTarget(String goalId, int target) async {
+    updatedTargets[goalId] = target;
+    final index = _goals.indexWhere((goal) => goal.id == goalId);
+    final goal = _goals[index].copyWith(target: target);
+    _goals[index] = goal;
+    final progress = _progress[goalId];
+    if (progress != null) {
+      _progress[goalId] = progress.copyWith(
+        target: target,
+        percent: (progress.progress / target * 1000).round() / 10,
+      );
+    }
     return goal;
   }
 

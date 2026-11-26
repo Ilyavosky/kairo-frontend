@@ -19,6 +19,10 @@ abstract final class AppRoutes {
 
   static const newGoal = '/metas/nueva';
 
+  static String goal(String id) => '/metas/$id';
+
+  static String editGoal(String id) => '/metas/$id/editar';
+
   static String timeRecord(String id) => '/tiempo/registro/$id';
 
   static String subject(String id) => '$subjects/$id';

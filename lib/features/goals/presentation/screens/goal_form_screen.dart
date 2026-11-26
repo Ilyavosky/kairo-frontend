@@ -3,36 +3,76 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
+import 'package:kairo/core/widgets/error_view.dart';
 import 'package:kairo/core/widgets/form_error_message.dart';
 import 'package:kairo/core/widgets/kairo_header.dart';
 import 'package:kairo/core/widgets/kairo_text_field.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
 import 'package:kairo/features/activities/data/models/activity_category.dart';
 import 'package:kairo/features/activities/presentation/widgets/picker_field.dart';
+import 'package:kairo/features/goals/data/models/goal.dart';
 import 'package:kairo/features/goals/data/models/goal_input.dart';
 import 'package:kairo/features/goals/domain/goal_format.dart';
 import 'package:kairo/features/goals/domain/goal_period.dart';
 import 'package:kairo/features/goals/domain/goal_type.dart';
 import 'package:kairo/features/goals/domain/goal_validator.dart';
 import 'package:kairo/features/goals/presentation/controllers/goal_form_controller.dart';
+import 'package:kairo/features/goals/presentation/controllers/goals_controller.dart';
 
-class GoalFormScreen extends StatelessWidget {
-  const GoalFormScreen({super.key});
+class GoalFormScreen extends ConsumerWidget {
+  const GoalFormScreen({this.goalId, this.initial, super.key});
+
+  final String? goalId;
+  final Goal? initial;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = goalId;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        KairoHeader(title: 'Nueva meta', onBack: () => context.pop()),
-        const Expanded(child: _GoalForm()),
+        KairoHeader(
+          title: id == null ? 'Nueva meta' : 'Cambiar objetivo',
+          onBack: () => context.pop(),
+        ),
+        Expanded(child: id == null ? const _GoalForm() : _existing(ref, id)),
       ],
+    );
+  }
+
+  Widget _existing(WidgetRef ref, String id) {
+    final goals = ref.watch(activeGoalsProvider);
+    final list = goals.value;
+    Goal? found;
+    for (final item in list ?? const <GoalWithProgress>[]) {
+      if (item.goal.id == id) {
+        found = item.goal;
+      }
+    }
+    found ??= initial?.id == id ? initial : null;
+    if (found != null) {
+      return _GoalForm(goal: found);
+    }
+    if (list != null) {
+      return const Center(child: Text('Esta meta ya no está activa.'));
+    }
+    final error = goals.error;
+    if (error != null) {
+      return ErrorView(
+        message: toAppException(error).message,
+        onRetry: () => ref.invalidate(activeGoalsProvider),
+      );
+    }
+    return const Center(
+      child: CircularProgressIndicator(semanticsLabel: 'Cargando'),
     );
   }
 }
 
 class _GoalForm extends ConsumerStatefulWidget {
-  const _GoalForm();
+  const _GoalForm({this.goal});
+
+  final Goal? goal;
 
   @override
   ConsumerState<_GoalForm> createState() => _GoalFormState();
@@ -49,9 +89,23 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
   GoalType _type = GoalType.time;
   GoalPeriod _period = GoalPeriod.week;
 
+  bool get _editing => widget.goal != null;
+
   @override
   void initState() {
     super.initState();
+    final goal = widget.goal;
+    if (goal != null) {
+      _categoryId = goal.categoryId;
+      _type = goal.type;
+      _period = goal.period;
+      if (goal.type == GoalType.time) {
+        _hoursController.text = '${goal.target ~/ 60}';
+        _minutesController.text = '${goal.target % 60}';
+      } else {
+        _eventsController.text = '${goal.target}';
+      }
+    }
     for (final controller in [
       _hoursController,
       _minutesController,
@@ -119,16 +173,18 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
         target == null) {
       return;
     }
-    final saved = await ref
-        .read(goalFormControllerProvider.notifier)
-        .create(
-          GoalInput(
-            categoryId: categoryId,
-            type: _type,
-            period: _period,
-            target: target,
-          ),
-        );
+    final controller = ref.read(goalFormControllerProvider.notifier);
+    final goal = widget.goal;
+    final saved = goal == null
+        ? await controller.create(
+            GoalInput(
+              categoryId: categoryId,
+              type: _type,
+              period: _period,
+              target: target,
+            ),
+          )
+        : await controller.updateTarget(goal.id, target);
     if (saved && mounted) {
       context.pop();
     }
@@ -172,6 +228,15 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (_editing) ...[
+              Text(
+                'Solo se puede cambiar el objetivo. Para cambiar la '
+                'categoría, el tipo o el periodo, desactiva esta meta y '
+                'crea otra.',
+                style: theme.textTheme.bodySmall,
+              ),
+              const SizedBox(height: KairoSpacing.lg),
+            ],
             PickerField(
               label: 'Categoría',
               placeholder: 'Selecciona una categoría',
@@ -180,7 +245,7 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
               value: categoryName,
               validator: () => GoalValidator.category(_categoryId),
               onTap: () => _pickCategory(categories),
-              enabled: !loading,
+              enabled: !loading && !_editing,
             ),
             const SizedBox(height: KairoSpacing.xl),
             Text(
@@ -203,7 +268,7 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
                 ),
               ],
               selected: {_type},
-              onSelectionChanged: loading
+              onSelectionChanged: loading || _editing
                   ? null
                   : (selection) {
                       _type = selection.first;
@@ -230,7 +295,7 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
                   ButtonSegment(value: period, label: Text(period.label)),
               ],
               selected: {_period},
-              onSelectionChanged: loading
+              onSelectionChanged: loading || _editing
                   ? null
                   : (selection) => setState(() => _period = selection.first),
             ),
@@ -314,7 +379,7 @@ class _GoalFormState extends ConsumerState<_GoalForm> {
                         semanticsLabel: 'Guardando',
                       ),
                     )
-                  : const Text('Guardar meta'),
+                  : Text(_editing ? 'Guardar cambios' : 'Guardar meta'),
             ),
           ],
         ),

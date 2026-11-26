@@ -12,6 +12,9 @@ import 'package:kairo/features/activities/presentation/screens/activities_screen
 import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
+import 'package:kairo/features/goals/data/models/goal.dart';
+import 'package:kairo/features/goals/presentation/controllers/goals_controller.dart';
+import 'package:kairo/features/goals/presentation/screens/goal_detail_screen.dart';
 import 'package:kairo/features/goals/presentation/screens/goal_form_screen.dart';
 import 'package:kairo/features/goals/presentation/screens/goals_screen.dart';
 import 'package:kairo/features/home/presentation/screens/home_screen.dart';
@@ -86,6 +89,24 @@ final _goalsRoute = GoRoute(
   builder: (context, state) => const GoalsScreen(),
   routes: [
     GoRoute(path: 'nueva', builder: (context, state) => const GoalFormScreen()),
+    GoRoute(
+      path: ':id',
+      builder: (context, state) => GoalDetailScreen(
+        goalId: state.pathParameters['id'] ?? '',
+        initial: state.extra is GoalWithProgress
+            ? state.extra! as GoalWithProgress
+            : null,
+      ),
+      routes: [
+        GoRoute(
+          path: 'editar',
+          builder: (context, state) => GoalFormScreen(
+            goalId: state.pathParameters['id'],
+            initial: state.extra is Goal ? state.extra! as Goal : null,
+          ),
+        ),
+      ],
+    ),
   ],
 );
 

@@ -25,7 +25,7 @@ class ActiveGoalsPanel extends ConsumerWidget {
 
     return Stack(
       children: [
-        Positioned.fill(child: _content(ref, goals, names)),
+        Positioned.fill(child: _content(context, ref, goals, names)),
         Positioned(
           right: KairoSpacing.page,
           bottom: KairoSpacing.lg,
@@ -40,6 +40,7 @@ class ActiveGoalsPanel extends ConsumerWidget {
   }
 
   Widget _content(
+    BuildContext context,
     WidgetRef ref,
     AsyncValue<List<GoalWithProgress>> goals,
     Map<String, String> names,
@@ -67,6 +68,10 @@ class ActiveGoalsPanel extends ConsumerWidget {
           itemBuilder: (context, index) => GoalCard(
             item: value[index],
             categoryName: names[value[index].goal.categoryId],
+            onTap: () => context.go(
+              AppRoutes.goal(value[index].goal.id),
+              extra: value[index],
+            ),
           ),
         ),
       ),
