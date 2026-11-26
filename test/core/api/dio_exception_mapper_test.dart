@@ -77,6 +77,18 @@ void main() {
       expect(mapDioException(badResponse(500)), isA<ServerException>());
     });
 
+    test('convierte un 503 en ServiceUnavailableException con su detalle', () {
+      final result = mapDioException(
+        badResponse(503, {
+          'codigo': 'extraccion_no_disponible',
+          'detalle': 'No se pudo interpretar el mensaje',
+        }),
+      );
+
+      expect(result, isA<ServiceUnavailableException>());
+      expect(result.message, 'No se pudo interpretar el mensaje');
+    });
+
     test('convierte una cancelación en UnknownException', () {
       final result = mapDioException(exceptionOfType(DioExceptionType.cancel));
 

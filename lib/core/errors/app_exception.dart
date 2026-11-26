@@ -33,6 +33,13 @@ final class ValidationException extends AppException {
   ]);
 }
 
+final class ServiceUnavailableException extends AppException {
+  const ServiceUnavailableException([
+    super.message =
+        'El servicio no está disponible por ahora. Intenta más tarde.',
+  ]);
+}
+
 final class ServerException extends AppException {
   const ServerException()
     : super('Ocurrió un error en el servidor. Intenta más tarde.');
