@@ -17,6 +17,8 @@ abstract final class AppRoutes {
 
   static const newTimeRecord = '/tiempo/registro/nuevo';
 
+  static const newGoal = '/metas/nueva';
+
   static String timeRecord(String id) => '/tiempo/registro/$id';
 
   static String subject(String id) => '$subjects/$id';

@@ -5,6 +5,7 @@ import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/goals/data/models/goal.dart';
 import 'package:kairo/features/goals/data/models/goal_evaluation.dart';
+import 'package:kairo/features/goals/data/models/goal_input.dart';
 import 'package:kairo/features/goals/data/models/goal_progress.dart';
 
 class GoalsApi {
@@ -25,6 +26,16 @@ class GoalsApi {
         for (final item in response.data ?? const [])
           Goal.fromJson(item as Map<String, dynamic>),
       ];
+    });
+  }
+
+  Future<Goal> create(GoalInput input) {
+    return _request(() async {
+      final response = await _dio.post<Map<String, dynamic>>(
+        _path,
+        data: input.toJson(),
+      );
+      return Goal.fromJson(response.data ?? const {});
     });
   }
 

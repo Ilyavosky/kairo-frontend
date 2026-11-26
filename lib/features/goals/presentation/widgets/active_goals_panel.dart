@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
+import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/empty_state.dart';
 import 'package:kairo/core/widgets/error_view.dart';
@@ -21,13 +23,35 @@ class ActiveGoalsPanel extends ConsumerWidget {
       for (final category in categories) category.id: category.name,
     };
 
+    return Stack(
+      children: [
+        Positioned.fill(child: _content(ref, goals, names)),
+        Positioned(
+          right: KairoSpacing.page,
+          bottom: KairoSpacing.lg,
+          child: FloatingActionButton(
+            onPressed: () => context.go(AppRoutes.newGoal),
+            tooltip: 'Nueva meta',
+            child: const Icon(Icons.add),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _content(
+    WidgetRef ref,
+    AsyncValue<List<GoalWithProgress>> goals,
+    Map<String, String> names,
+  ) {
     return switch (goals) {
       AsyncData(:final value) when value.isEmpty => const EmptyState(
         icon: Icons.flag_outlined,
         title: 'Aún no tienes metas',
         message:
             'Una meta te ayuda a ver si cumples lo que te propones, '
-            'por ejemplo estudiar 5 horas a la semana.',
+            'por ejemplo estudiar 5 horas a la semana. '
+            'Toca + para crear la primera.',
       ),
       AsyncData(:final value) => RefreshIndicator(
         onRefresh: () => ref.refresh(activeGoalsProvider.future),
