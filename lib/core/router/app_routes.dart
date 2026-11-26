@@ -15,6 +15,8 @@ abstract final class AppRoutes {
 
   static const capture = '/inicio/capturar';
 
+  static const manualCapture = '/inicio/capturar/manual';
+
   static String homeActivity(String id) => '/inicio/actividad/$id';
 
   static const newTimeRecord = '/tiempo/registro/nuevo';

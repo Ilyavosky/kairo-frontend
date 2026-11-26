@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kairo/core/errors/app_exception.dart';
+import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/core/widgets/form_error_message.dart';
 import 'package:kairo/core/widgets/kairo_header.dart';
@@ -71,6 +73,28 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
     await ref
         .read(captureControllerProvider.notifier)
         .submit(_textController.text);
+    if (!mounted) {
+      return;
+    }
+    if (ref.read(captureControllerProvider).error
+        is ServiceUnavailableException) {
+      await _openManual();
+    }
+  }
+
+  Future<void> _openManual() async {
+    final messenger = ScaffoldMessenger.of(context);
+    final saved = await context.push<bool>(
+      AppRoutes.manualCapture,
+      extra: _textController.text.trim(),
+    );
+    if (saved != true || !mounted) {
+      return;
+    }
+    context.pop();
+    messenger
+      ..hideCurrentSnackBar()
+      ..showSnackBar(const SnackBar(content: Text('Guardado como actividad.')));
   }
 
   Future<void> _confirm() =>
@@ -189,6 +213,13 @@ class _CaptureScreenState extends ConsumerState<CaptureScreen> {
           if (error != null) ...[
             const SizedBox(height: KairoSpacing.md),
             FormErrorMessage(message: error.message),
+          ],
+          if (error is ServiceUnavailableException) ...[
+            const SizedBox(height: KairoSpacing.sm),
+            OutlinedButton(
+              onPressed: state.busy ? null : _openManual,
+              child: const Text('Llenar formulario manual'),
+            ),
           ],
           const SizedBox(height: KairoSpacing.lg),
           FilledButton(

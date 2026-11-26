@@ -136,6 +136,14 @@ final _homeRoute = GoRoute(
     GoRoute(
       path: 'capturar',
       builder: (context, state) => const CaptureScreen(),
+      routes: [
+        GoRoute(
+          path: 'manual',
+          builder: (context, state) => ActivityFormScreen(
+            draftText: state.extra is String ? state.extra! as String : null,
+          ),
+        ),
+      ],
     ),
     GoRoute(
       path: 'actividad/:id',
