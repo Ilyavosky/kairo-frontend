@@ -17,12 +17,13 @@ La URL de la API no se escribe en el código. Se pasa al compilar con
 cp dart_defines.example.json dart_defines.json
 ```
 
-Edita `dart_defines.json` con la URL del backend. Ese archivo está en
+Edita `dart_defines.json` con la URL del backend y el usuario del bot. Ese archivo está en
 `.gitignore` y no se sube al repositorio.
 
-| Variable  | Descripción                                         |
-|-----------|-----------------------------------------------------|
-| `API_URL` | URL base del backend, sin barra final (`https://…`) |
+| Variable       | Descripción                                                                 |
+|----------------|-----------------------------------------------------------------------------|
+| `API_URL`      | URL base del backend, sin barra final (`https://…`)                         |
+| `TELEGRAM_BOT` | Usuario del bot de Telegram sin `@`. Si falta, la app muestra el código para enviarlo a mano |
 
 ## Instalar y correr
 

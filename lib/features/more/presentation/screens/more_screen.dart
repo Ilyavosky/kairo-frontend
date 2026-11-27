@@ -61,6 +61,13 @@ class MoreScreen extends ConsumerWidget {
                       subtitle: 'Cómo te sentiste cada semana',
                       onTap: () => context.go(AppRoutes.selfAssessment),
                     ),
+                    const Divider(height: 1),
+                    _MoreOption(
+                      icon: Icons.send_outlined,
+                      title: 'Telegram',
+                      subtitle: 'Vincula el bot de Kairo',
+                      onTap: () => context.go(AppRoutes.telegram),
+                    ),
                   ],
                 ),
               ),
