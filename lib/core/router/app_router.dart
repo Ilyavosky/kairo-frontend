@@ -20,6 +20,8 @@ import 'package:kairo/features/goals/presentation/screens/goal_form_screen.dart'
 import 'package:kairo/features/goals/presentation/screens/goals_screen.dart';
 import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
+import 'package:kairo/features/reminders/presentation/screens/reminder_form_screen.dart';
+import 'package:kairo/features/reminders/presentation/screens/reminders_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:kairo/features/time_tracking/data/models/time_record.dart';
@@ -187,6 +189,16 @@ final _moreRoute = GoRoute(
           path: ':id',
           builder: (context, state) =>
               SubjectFormScreen(subjectId: state.pathParameters['id']),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'recordatorios',
+      builder: (context, state) => const RemindersScreen(),
+      routes: [
+        GoRoute(
+          path: 'nuevo',
+          builder: (context, state) => const ReminderFormScreen(),
         ),
       ],
     ),

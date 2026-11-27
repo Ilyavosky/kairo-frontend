@@ -8,8 +8,10 @@ import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
 import 'package:kairo/features/capture/data/capture_api.dart';
 import 'package:kairo/features/capture/data/shared_text_source.dart';
+import 'package:kairo/features/events/data/events_api.dart';
 import 'package:kairo/features/goals/data/goals_api.dart';
 import 'package:kairo/features/home/data/calendar_api.dart';
+import 'package:kairo/features/reminders/data/reminders_api.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
 import 'package:kairo/features/time_tracking/data/time_records_api.dart';
 import 'package:kairo/features/time_tracking/data/timer_api.dart';
@@ -18,7 +20,9 @@ import 'fake_activities_api.dart';
 import 'fake_calendar_api.dart';
 import 'fake_capture_api.dart';
 import 'fake_categories_api.dart';
+import 'fake_events_api.dart';
 import 'fake_goals_api.dart';
+import 'fake_reminders_api.dart';
 import 'fake_shared_text_source.dart';
 import 'fake_subjects_api.dart';
 import 'fake_time_records_api.dart';
@@ -36,6 +40,8 @@ Future<MemoryTokenStorage> pumpSignedInApp(
   FakeGoalsApi? goalsApi,
   FakeCaptureApi? captureApi,
   FakeSharedTextSource? sharedText,
+  FakeRemindersApi? remindersApi,
+  FakeEventsApi? eventsApi,
   bool settle = true,
 }) async {
   final storage = MemoryTokenStorage('token-guardado');
@@ -61,6 +67,10 @@ Future<MemoryTokenStorage> pumpSignedInApp(
         sharedTextSourceProvider.overrideWithValue(
           sharedText ?? FakeSharedTextSource(),
         ),
+        remindersApiProvider.overrideWithValue(
+          remindersApi ?? FakeRemindersApi(),
+        ),
+        eventsApiProvider.overrideWithValue(eventsApi ?? FakeEventsApi()),
         healthStatusProvider.overrideWith(
           (ref) => Future.value(const HealthStatus(status: 'healthy')),
         ),

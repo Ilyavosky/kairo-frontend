@@ -9,6 +9,9 @@ abstract final class AppRoutes {
   static const subjects = '/mas/materias';
   static const newSubject = '/mas/materias/nueva';
 
+  static const reminders = '/mas/recordatorios';
+  static const newReminder = '/mas/recordatorios/nuevo';
+
   static const Set<String> publicRoutes = {splash, login, register};
 
   static String activity(String id) => '$activities/$id';
