@@ -72,16 +72,14 @@ void main() {
 
     await tapVisible(tester, find.text('Vincular Telegram'));
     api.linked = true;
-    for (final state in [
+    [
       AppLifecycleState.inactive,
       AppLifecycleState.hidden,
       AppLifecycleState.paused,
       AppLifecycleState.hidden,
       AppLifecycleState.inactive,
       AppLifecycleState.resumed,
-    ]) {
-      tester.binding.handleAppLifecycleStateChanged(state);
-    }
+    ].forEach(tester.binding.handleAppLifecycleStateChanged);
     await tester.pumpAndSettle();
 
     expect(find.text('Vinculado'), findsOneWidget);

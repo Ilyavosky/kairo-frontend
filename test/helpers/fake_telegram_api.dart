@@ -7,8 +7,8 @@ class FakeTelegramApi implements TelegramApi {
   bool linked;
   final Exception? statusError;
   final Exception? linkError;
-  var statusCalls = 0;
-  var linksCreated = 0;
+  int statusCalls = 0;
+  int linksCreated = 0;
 
   @override
   Future<bool> isLinked() async {

@@ -4,7 +4,7 @@ import 'package:kairo/core/theme/kairo_spacing.dart';
 class TelegramPrivacyCard extends StatelessWidget {
   const TelegramPrivacyCard({super.key});
 
-  static const _items = [
+  static const List<(IconData, String)> _items = [
     (
       Icons.badge_outlined,
       'Tu número de usuario de Telegram, para saber que eres tú. '
