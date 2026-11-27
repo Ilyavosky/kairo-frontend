@@ -22,6 +22,9 @@ import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/reminders/presentation/screens/reminder_form_screen.dart';
 import 'package:kairo/features/reminders/presentation/screens/reminders_screen.dart';
+import 'package:kairo/features/self_assessment/data/models/self_assessment.dart';
+import 'package:kairo/features/self_assessment/presentation/screens/self_assessment_form_screen.dart';
+import 'package:kairo/features/self_assessment/presentation/screens/self_assessment_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subject_form_screen.dart';
 import 'package:kairo/features/subjects/presentation/screens/subjects_screen.dart';
 import 'package:kairo/features/time_tracking/data/models/time_record.dart';
@@ -199,6 +202,21 @@ final _moreRoute = GoRoute(
         GoRoute(
           path: 'nuevo',
           builder: (context, state) => const ReminderFormScreen(),
+        ),
+      ],
+    ),
+    GoRoute(
+      path: 'autoevaluacion',
+      builder: (context, state) => const SelfAssessmentScreen(),
+      routes: [
+        GoRoute(
+          path: ':semana',
+          builder: (context, state) => SelfAssessmentFormScreen(
+            weekKey: state.pathParameters['semana'] ?? '',
+            initial: state.extra is SelfAssessment
+                ? state.extra! as SelfAssessment
+                : null,
+          ),
         ),
       ],
     ),

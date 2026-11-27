@@ -54,6 +54,13 @@ class MoreScreen extends ConsumerWidget {
                       subtitle: 'Avisos por Telegram de tus pendientes',
                       onTap: () => context.go(AppRoutes.reminders),
                     ),
+                    const Divider(height: 1),
+                    _MoreOption(
+                      icon: Icons.self_improvement,
+                      title: 'Autoevaluación semanal',
+                      subtitle: 'Cómo te sentiste cada semana',
+                      onTap: () => context.go(AppRoutes.selfAssessment),
+                    ),
                   ],
                 ),
               ),
