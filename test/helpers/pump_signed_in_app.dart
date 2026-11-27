@@ -8,9 +8,15 @@ import 'package:kairo/features/activities/data/activities_api.dart';
 import 'package:kairo/features/activities/data/categories_api.dart';
 import 'package:kairo/features/capture/data/capture_api.dart';
 import 'package:kairo/features/capture/data/shared_text_source.dart';
+import 'package:kairo/features/events/data/events_api.dart';
 import 'package:kairo/features/goals/data/goals_api.dart';
 import 'package:kairo/features/home/data/calendar_api.dart';
+import 'package:kairo/features/reminders/data/reminders_api.dart';
+import 'package:kairo/features/self_assessment/data/self_assessment_api.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
+import 'package:kairo/features/telegram/data/link_opener.dart';
+import 'package:kairo/features/telegram/data/telegram_api.dart';
+import 'package:kairo/features/telegram/presentation/controllers/telegram_controller.dart';
 import 'package:kairo/features/time_tracking/data/time_records_api.dart';
 import 'package:kairo/features/time_tracking/data/timer_api.dart';
 
@@ -18,9 +24,14 @@ import 'fake_activities_api.dart';
 import 'fake_calendar_api.dart';
 import 'fake_capture_api.dart';
 import 'fake_categories_api.dart';
+import 'fake_events_api.dart';
 import 'fake_goals_api.dart';
+import 'fake_link_opener.dart';
+import 'fake_reminders_api.dart';
+import 'fake_self_assessment_api.dart';
 import 'fake_shared_text_source.dart';
 import 'fake_subjects_api.dart';
+import 'fake_telegram_api.dart';
 import 'fake_time_records_api.dart';
 import 'fake_timer_api.dart';
 import 'memory_token_storage.dart';
@@ -36,6 +47,12 @@ Future<MemoryTokenStorage> pumpSignedInApp(
   FakeGoalsApi? goalsApi,
   FakeCaptureApi? captureApi,
   FakeSharedTextSource? sharedText,
+  FakeRemindersApi? remindersApi,
+  FakeEventsApi? eventsApi,
+  FakeSelfAssessmentApi? selfAssessmentApi,
+  FakeTelegramApi? telegramApi,
+  FakeLinkOpener? linkOpener,
+  String telegramBot = '',
   bool settle = true,
 }) async {
   final storage = MemoryTokenStorage('token-guardado');
@@ -61,6 +78,16 @@ Future<MemoryTokenStorage> pumpSignedInApp(
         sharedTextSourceProvider.overrideWithValue(
           sharedText ?? FakeSharedTextSource(),
         ),
+        remindersApiProvider.overrideWithValue(
+          remindersApi ?? FakeRemindersApi(),
+        ),
+        eventsApiProvider.overrideWithValue(eventsApi ?? FakeEventsApi()),
+        selfAssessmentApiProvider.overrideWithValue(
+          selfAssessmentApi ?? FakeSelfAssessmentApi(),
+        ),
+        telegramApiProvider.overrideWithValue(telegramApi ?? FakeTelegramApi()),
+        linkOpenerProvider.overrideWithValue(linkOpener ?? FakeLinkOpener()),
+        telegramBotProvider.overrideWithValue(telegramBot),
         healthStatusProvider.overrideWith(
           (ref) => Future.value(const HealthStatus(status: 'healthy')),
         ),

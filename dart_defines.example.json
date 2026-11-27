@@ -1,3 +1,4 @@
 {
-  "API_URL": "https://tu-backend.onrender.com"
+  "API_URL": "https://tu-backend.onrender.com",
+  "TELEGRAM_BOT": "nombre_del_bot"
 }

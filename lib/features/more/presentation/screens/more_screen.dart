@@ -39,11 +39,36 @@ class MoreScreen extends ConsumerWidget {
             children: [
               Card(
                 clipBehavior: Clip.antiAlias,
-                child: _MoreOption(
-                  icon: Icons.menu_book,
-                  title: 'Materias',
-                  subtitle: 'Tus materias del periodo',
-                  onTap: () => context.go(AppRoutes.subjects),
+                child: Column(
+                  children: [
+                    _MoreOption(
+                      icon: Icons.menu_book,
+                      title: 'Materias',
+                      subtitle: 'Tus materias del periodo',
+                      onTap: () => context.go(AppRoutes.subjects),
+                    ),
+                    const Divider(height: 1),
+                    _MoreOption(
+                      icon: Icons.notifications_none,
+                      title: 'Recordatorios',
+                      subtitle: 'Avisos por Telegram de tus pendientes',
+                      onTap: () => context.go(AppRoutes.reminders),
+                    ),
+                    const Divider(height: 1),
+                    _MoreOption(
+                      icon: Icons.self_improvement,
+                      title: 'Autoevaluación semanal',
+                      subtitle: 'Cómo te sentiste cada semana',
+                      onTap: () => context.go(AppRoutes.selfAssessment),
+                    ),
+                    const Divider(height: 1),
+                    _MoreOption(
+                      icon: Icons.send_outlined,
+                      title: 'Telegram',
+                      subtitle: 'Vincula el bot de Kairo',
+                      onTap: () => context.go(AppRoutes.telegram),
+                    ),
+                  ],
                 ),
               ),
               const SizedBox(height: KairoSpacing.xl),
