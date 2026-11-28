@@ -102,4 +102,23 @@ void main() {
     expect(days[3].personalEvents, isEmpty);
     expect(days[1].isEmpty, isFalse);
   });
+
+  test('un evento que termina a medianoche no pasa al día siguiente', () {
+    final days = Agenda.build(
+      now: now,
+      activities: const [],
+      events: const [],
+      personalEvents: [
+        Event(
+          id: 'evento-1',
+          title: 'Estudio nocturno',
+          start: DateTime(2026, 11, 20, 23),
+          end: DateTime(2026, 11, 21),
+        ),
+      ],
+    );
+
+    expect(days[0].personalEvents.single.title, 'Estudio nocturno');
+    expect(days[1].personalEvents, isEmpty);
+  });
 }
