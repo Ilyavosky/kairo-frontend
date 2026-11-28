@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:kairo/core/router/app_routes.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 
 class KairoHeader extends StatelessWidget {
@@ -6,12 +8,14 @@ class KairoHeader extends StatelessWidget {
     required this.title,
     this.onBack,
     this.onProfileTap,
+    this.showProfile = true,
     super.key,
   });
 
   final String title;
   final VoidCallback? onBack;
   final VoidCallback? onProfileTap;
+  final bool showProfile;
 
   @override
   Widget build(BuildContext context) {
@@ -37,14 +41,17 @@ class KairoHeader extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              IconButton(
-                onPressed: onProfileTap,
-                tooltip: 'Perfil',
-                iconSize: 32,
-                color: scheme.primary,
-                disabledColor: scheme.primary,
-                icon: const Icon(Icons.account_circle),
-              ),
+              if (showProfile)
+                IconButton(
+                  onPressed:
+                      onProfileTap ?? () => context.go(AppRoutes.account),
+                  tooltip: 'Mi cuenta',
+                  iconSize: 32,
+                  color: scheme.primary,
+                  icon: const Icon(Icons.account_circle),
+                )
+              else
+                const SizedBox(height: 48),
             ],
           ),
           const SizedBox(height: KairoSpacing.sm),

@@ -18,6 +18,8 @@ abstract final class AppRoutes {
 
   static const reports = '/mas/reportes';
 
+  static const account = '/mas/cuenta';
+
   static String selfAssessmentWeek(String week) => '$selfAssessment/$week';
 
   static const Set<String> publicRoutes = {splash, login, register};
