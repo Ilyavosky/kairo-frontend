@@ -16,6 +16,7 @@ import 'package:kairo/features/reminders/data/reminders_api.dart';
 import 'package:kairo/features/reports/data/reports_api.dart';
 import 'package:kairo/features/self_assessment/data/self_assessment_api.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
+import 'package:kairo/features/tags/data/tags_api.dart';
 import 'package:kairo/features/telegram/data/link_opener.dart';
 import 'package:kairo/features/telegram/data/telegram_api.dart';
 import 'package:kairo/features/telegram/presentation/controllers/telegram_controller.dart';
@@ -35,6 +36,7 @@ import 'fake_reports_api.dart';
 import 'fake_self_assessment_api.dart';
 import 'fake_shared_text_source.dart';
 import 'fake_subjects_api.dart';
+import 'fake_tags_api.dart';
 import 'fake_telegram_api.dart';
 import 'fake_time_records_api.dart';
 import 'fake_timer_api.dart';
@@ -56,6 +58,7 @@ Future<MemoryTokenStorage> pumpSignedInApp(
   FakeSelfAssessmentApi? selfAssessmentApi,
   FakeReportsApi? reportsApi,
   FakeAccountApi? accountApi,
+  FakeTagsApi? tagsApi,
   FakeTelegramApi? telegramApi,
   FakeLinkOpener? linkOpener,
   String telegramBot = '',
@@ -93,6 +96,7 @@ Future<MemoryTokenStorage> pumpSignedInApp(
         ),
         reportsApiProvider.overrideWithValue(reportsApi ?? FakeReportsApi()),
         accountApiProvider.overrideWithValue(accountApi ?? FakeAccountApi()),
+        tagsApiProvider.overrideWithValue(tagsApi ?? FakeTagsApi()),
         telegramApiProvider.overrideWithValue(telegramApi ?? FakeTelegramApi()),
         linkOpenerProvider.overrideWithValue(linkOpener ?? FakeLinkOpener()),
         telegramBotProvider.overrideWithValue(telegramBot),
