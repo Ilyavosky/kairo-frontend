@@ -7,6 +7,7 @@ import 'package:kairo/core/api/health_api.dart';
 import 'package:kairo/features/auth/data/auth_api.dart';
 import 'package:kairo/features/auth/data/models/login_request.dart';
 import 'package:kairo/features/auth/data/models/register_request.dart';
+import 'package:kairo/features/reports/data/reports_api.dart';
 import 'package:kairo/features/subjects/data/models/subject_input.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
 
@@ -116,5 +117,35 @@ void main() {
     expect(adapter.requests.first.uri.path, '/api/v1/materias');
     expect(adapter.requests.last.uri.path, '/api/v1/materias/materia-1');
     expect(adapter.requests.last.data, {'activa': false});
+  });
+
+  test('los reportes van bajo /api/v1/reportes con sus semanas', () async {
+    final lists = _RecordingAdapter(<Object>[]);
+    final api = ReportsApi(dioWith(lists));
+
+    await api.weeklyLoad();
+    await api.loadVsRest();
+    await api.goals();
+
+    final load = lists.requests[0].uri;
+    expect(load.path, '/api/v1/reportes/carga-semanal');
+    expect(load.queryParameters, {
+      'semanas_atras': '8',
+      'semanas_adelante': '4',
+    });
+    final rest = lists.requests[1].uri;
+    expect(rest.path, '/api/v1/reportes/carga-vs-descanso');
+    expect(rest.queryParameters, {'semanas': '8'});
+    expect(lists.requests[2].uri.path, '/api/v1/reportes/metas');
+
+    final summary = _RecordingAdapter({
+      'generado_en': '2026-11-28T12:00:00Z',
+      'texto': null,
+      'motivo_sin_texto': 'proveedor_no_disponible',
+    });
+    final result = await ReportsApi(dioWith(summary)).summary();
+
+    expect(summary.requests.single.uri.path, '/api/v1/reportes/resumen');
+    expect(result.text, isNull);
   });
 }

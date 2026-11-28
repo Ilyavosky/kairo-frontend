@@ -76,11 +76,24 @@ class _AgendaList extends ConsumerWidget {
           KairoSpacing.page,
           KairoSpacing.sm,
           KairoSpacing.page,
-          KairoSpacing.xl,
+          96,
         ),
         children: [
           RunningTimerCard(timePath: AppSection.time.path),
-          Text('Próximos 7 días', style: theme.textTheme.titleLarge),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  'Próximos 7 días',
+                  style: theme.textTheme.titleLarge,
+                ),
+              ),
+              TextButton(
+                onPressed: () => context.go(AppRoutes.newEvent),
+                child: const Text('Agregar evento'),
+              ),
+            ],
+          ),
           const SizedBox(height: KairoSpacing.xs),
           Text(switch (pending) {
             0 => 'No tienes entregas esta semana.',
@@ -97,6 +110,8 @@ class _AgendaList extends ConsumerWidget {
                 AppRoutes.homeActivity(activity.id),
                 extra: activity,
               ),
+              onEventTap: (event) =>
+                  context.go(AppRoutes.event(event.id), extra: event),
             ),
             const SizedBox(height: KairoSpacing.xl),
           ],

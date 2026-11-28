@@ -4,6 +4,7 @@ import 'package:kairo/core/api/api_config.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/events/data/models/event.dart';
+import 'package:kairo/features/events/data/models/event_input.dart';
 import 'package:kairo/features/events/domain/event_type.dart';
 
 class EventsApi {
@@ -33,6 +34,32 @@ class EventsApi {
         for (final item in response.data ?? const [])
           Event.fromJson(item as Map<String, dynamic>),
       ];
+    } on DioException catch (error) {
+      throw toAppException(error);
+    }
+  }
+
+  Future<Event> get(String eventId) =>
+      _one(() => _dio.get<Map<String, dynamic>>('$_path/$eventId'));
+
+  Future<Event> create(EventInput input) =>
+      _one(() => _dio.post<Map<String, dynamic>>(_path, data: _body(input)));
+
+  Future<Event> update(String eventId, EventInput input) => _one(
+    () =>
+        _dio.patch<Map<String, dynamic>>('$_path/$eventId', data: _body(input)),
+  );
+
+  Map<String, dynamic> _body(EventInput input) => input
+      .copyWith(start: input.start.toUtc(), end: input.end.toUtc())
+      .toJson();
+
+  Future<Event> _one(
+    Future<Response<Map<String, dynamic>>> Function() call,
+  ) async {
+    try {
+      final response = await call();
+      return Event.fromJson(response.data ?? const {});
     } on DioException catch (error) {
       throw toAppException(error);
     }

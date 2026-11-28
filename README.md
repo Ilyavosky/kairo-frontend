@@ -66,7 +66,25 @@ lib/
 - **Guard de rutas:** sin sesión solo se puede ver el inicio de sesión; con
   sesión se abren las cinco secciones (Inicio, Actividades, Tiempo, Metas y Más).
 - **Errores:** cada error de red se convierte en un `AppException` con un
-  mensaje en español. Si el backend manda `detalle`, se muestra ese texto.
+  mensaje en español. Si el backend manda `detalle`, se muestra ese texto,
+  salvo en los errores de validación de campos (`codigo: validacion`), que
+  traen un detalle técnico y se cambian por un mensaje general. El límite de
+  solicitudes (429) tiene su propio aviso.
+- **Reportes:** en Más → Reportes, con gráficas hechas con `fl_chart`: carga
+  por materia, entregas contra descanso, progreso de metas y el resumen
+  redactado. El resumen se pide una vez por sesión para respetar el límite del
+  backend.
+- **Eventos:** la agenda de Inicio muestra los eventos personales (clase,
+  examen, entrega, reunión o personal). Se crean con **Agregar evento** y se
+  editan tocándolos en la agenda.
+- **Etiquetas:** al editar una actividad se le pueden asignar etiquetas
+  existentes, crear nuevas o quitarlas.
+- **Mi cuenta:** se abre desde el ícono de perfil y muestra el nombre, el
+  correo, la zona horaria y el estado de Telegram.
+- **Zona horaria:** la app usa la hora del teléfono para decidir el día y la
+  semana actuales en la agenda y en los reportes, mientras que el backend usa
+  la zona de la cuenta. Las dos deben coincidir; la zona de la cuenta se ve en
+  Mi cuenta y por ahora no se puede cambiar desde la app.
 - **Idioma:** textos de interfaz y formatos de fecha en español de México
   (`es_MX`).
 
@@ -83,6 +101,27 @@ flutter test
 El workflow `.github/workflows/ci.yml` corre estos mismos pasos en cada PR hacia
 `main` y `develop`. Si el código no está formateado, tiene avisos de análisis o
 alguna prueba falla, el PR no se puede mergear. Las pruebas corren sin emulador.
+
+## Regresión en teléfono real
+
+Antes de la entrega se hace una pasada completa en un teléfono Android real con
+la lista de [`docs/regresion.md`](docs/regresion.md). Cada error encontrado se
+abre como issue con la etiqueta `bug`.
+
+## Pendientes conocidos
+
+Lo siguiente queda aplazado de forma explícita para después de la entrega:
+
+| Pendiente | Motivo |
+|---|---|
+| Desvincular Telegram desde la app | El backend todavía no tiene un endpoint para quitar la vinculación |
+| `/reportes/pipeline` y `/capturas/metricas` | Opcionales; la app no los usa |
+| Notificaciones push y modo sin conexión (T48) | Opcional |
+| Actualizaciones mayores de dependencias (`freezed` 4, `flutter_secure_storage` 11, `flutter_timezone` 5, `cupertino_icons` 2, `actions/checkout` 7) | Cambian código generado o APIs; se evalúan después del congelamiento |
+| Firma del APK con llave propia | El APK de la demo se firma con la llave de debug; la llave propia se configura fuera del repositorio |
+
+Los errores que se encuentren en la regresión y no se corrijan antes de la
+demo se agregan a esta tabla con su issue.
 
 ## Cómo contribuir
 

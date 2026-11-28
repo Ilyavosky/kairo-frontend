@@ -17,6 +17,7 @@ abstract class Event with _$Event {
     @JsonKey(name: 'actividad_id') String? activityId,
     @JsonKey(name: 'materia_id') String? subjectId,
     @JsonKey(name: 'lugar') String? place,
+    @JsonKey(name: 'descripcion') String? description,
   }) = _Event;
 
   factory Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);

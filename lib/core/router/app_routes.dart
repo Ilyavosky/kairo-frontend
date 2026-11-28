@@ -32,6 +32,10 @@ abstract final class AppRoutes {
 
   static String homeActivity(String id) => '/inicio/actividad/$id';
 
+  static const newEvent = '/inicio/evento/nuevo';
+
+  static String event(String id) => '/inicio/evento/$id';
+
   static const newTimeRecord = '/tiempo/registro/nuevo';
 
   static const newGoal = '/metas/nueva';

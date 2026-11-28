@@ -89,7 +89,7 @@ abstract final class Agenda {
     final dayPersonal = [
       for (final event in personalEvents)
         if (!date.isBefore(startOf(event.start.toLocal())) &&
-            !date.isAfter(startOf(event.end.toLocal())))
+            !date.isAfter(_lastDay(event)))
           event,
     ]..sort((a, b) => a.start.compareTo(b.start));
     final dayActivities = [
@@ -108,6 +108,15 @@ abstract final class Agenda {
       ],
       personalEvents: dayPersonal,
     );
+  }
+
+  static DateTime _lastDay(Event event) {
+    final start = event.start.toLocal();
+    final end = event.end.toLocal();
+    if (!end.isAfter(start)) {
+      return startOf(start);
+    }
+    return startOf(end.subtract(const Duration(microseconds: 1)));
   }
 
   static bool _isOn(DateTime? dueAt, DateTime date) {

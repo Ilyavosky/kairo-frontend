@@ -21,6 +21,7 @@ _Event _$EventFromJson(Map<String, dynamic> json) => _Event(
   activityId: json['actividad_id'] as String?,
   subjectId: json['materia_id'] as String?,
   place: json['lugar'] as String?,
+  description: json['descripcion'] as String?,
 );
 
 Map<String, dynamic> _$EventToJson(_Event instance) => <String, dynamic>{
@@ -32,6 +33,7 @@ Map<String, dynamic> _$EventToJson(_Event instance) => <String, dynamic>{
   'actividad_id': instance.activityId,
   'materia_id': instance.subjectId,
   'lugar': instance.place,
+  'descripcion': instance.description,
 };
 
 const _$EventTypeEnumMap = {

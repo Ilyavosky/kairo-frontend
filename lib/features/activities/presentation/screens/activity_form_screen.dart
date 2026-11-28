@@ -20,6 +20,7 @@ import 'package:kairo/features/activities/presentation/controllers/activity_form
 import 'package:kairo/features/activities/presentation/widgets/picker_field.dart';
 import 'package:kairo/features/subjects/data/models/subject.dart';
 import 'package:kairo/features/subjects/data/subjects_api.dart';
+import 'package:kairo/features/tags/presentation/widgets/activity_tags_section.dart';
 
 class ActivityFormScreen extends ConsumerWidget {
   const ActivityFormScreen({
@@ -403,6 +404,10 @@ class _ActivityFormState extends ConsumerState<_ActivityForm> {
                   ? null
                   : (selection) => setState(() => _modality = selection.first),
             ),
+            if (activity != null) ...[
+              const SizedBox(height: KairoSpacing.xl),
+              ActivityTagsSection(activityId: activity.id),
+            ],
             if (error != null) ...[
               const SizedBox(height: KairoSpacing.lg),
               FormErrorMessage(message: error),
