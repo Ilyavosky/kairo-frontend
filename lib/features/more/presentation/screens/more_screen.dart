@@ -34,13 +34,20 @@ class MoreScreen extends ConsumerWidget {
               KairoSpacing.page,
               KairoSpacing.md,
               KairoSpacing.page,
-              KairoSpacing.xl,
+              96,
             ),
             children: [
               Card(
                 clipBehavior: Clip.antiAlias,
                 child: Column(
                   children: [
+                    _MoreOption(
+                      icon: Icons.bar_chart,
+                      title: 'Reportes',
+                      subtitle: 'Tus patrones de carga y descanso',
+                      onTap: () => context.go(AppRoutes.reports),
+                    ),
+                    const Divider(height: 1),
                     _MoreOption(
                       icon: Icons.menu_book,
                       title: 'Materias',

@@ -11,6 +11,12 @@ void main() {
 
     await tester.tap(find.text('Más'));
     await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.widgetWithText(OutlinedButton, 'Cerrar sesión'),
+      200,
+      scrollable: find.byType(Scrollable).first,
+    );
+    await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(OutlinedButton, 'Cerrar sesión'));
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilledButton, 'Cerrar sesión'));

@@ -21,6 +21,8 @@ void main() {
     );
     await tester.tap(find.text('Más'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Telegram'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Telegram'));
     await tester.pumpAndSettle();
   }

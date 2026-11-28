@@ -32,6 +32,8 @@ void main() {
     await pumpSignedInApp(tester, selfAssessmentApi: api);
     await tester.tap(find.text('Más'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Autoevaluación semanal'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Autoevaluación semanal'));
     await tester.pumpAndSettle();
   }
