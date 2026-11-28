@@ -52,6 +52,18 @@ void main() {
       expect(result.message, 'Correo o contraseña incorrectos');
     });
 
+    test('no muestra el detalle técnico de la validación de campos', () {
+      final result = mapDioException(
+        badResponse(422, {
+          'codigo': 'validacion',
+          'detalle': 'body.momento: Input should be a valid datetime',
+        }),
+      );
+
+      expect(result, isA<ValidationException>());
+      expect(result.message, 'Revisa los datos e intenta de nuevo.');
+    });
+
     test('usa el detalle del servidor en errores de validación', () {
       final result = mapDioException(
         badResponse(409, {

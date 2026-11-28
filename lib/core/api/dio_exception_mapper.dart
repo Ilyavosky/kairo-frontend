@@ -49,6 +49,9 @@ ServiceUnavailableException _unavailable(Object? data) {
 }
 
 ValidationException _validation(Object? data) {
+  if (data case {'codigo': 'validacion'}) {
+    return const ValidationException();
+  }
   final detalle = _detalle(data);
   return detalle == null
       ? const ValidationException()

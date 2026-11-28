@@ -108,7 +108,7 @@ class _RunningTimerCardState extends ConsumerState<RunningTimerCard> {
                 ),
                 FilledButton(
                   style: FilledButton.styleFrom(
-                    minimumSize: const Size(88, 44),
+                    minimumSize: const Size(88, KairoSpacing.touchTarget),
                   ),
                   onPressed: _stopping ? null : () => _stop(categoryName),
                   child: const Text('Detener'),
