@@ -1,4 +1,4 @@
 {
-  "API_URL": "https://tu-backend.onrender.com",
+  "API_URL": "https://tu-backend.up.railway.app",
   "TELEGRAM_BOT": "nombre_del_bot"
 }

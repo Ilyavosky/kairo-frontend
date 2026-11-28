@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
+import 'package:kairo/features/events/data/models/event.dart';
 import 'package:kairo/features/home/data/models/calendar_event.dart';
 
 @immutable
@@ -8,13 +9,16 @@ class AgendaDay {
     required this.date,
     required this.activities,
     required this.events,
+    this.personalEvents = const [],
   });
 
   final DateTime date;
   final List<Activity> activities;
   final List<CalendarEvent> events;
+  final List<Event> personalEvents;
 
-  bool get isEmpty => activities.isEmpty && events.isEmpty;
+  bool get isEmpty =>
+      activities.isEmpty && events.isEmpty && personalEvents.isEmpty;
 }
 
 abstract final class Agenda {
@@ -50,6 +54,7 @@ abstract final class Agenda {
     required DateTime now,
     required List<Activity> activities,
     required List<CalendarEvent> events,
+    List<Event> personalEvents = const [],
   }) {
     final start = startOf(now);
     return [
@@ -58,6 +63,7 @@ abstract final class Agenda {
           DateTime(start.year, start.month, start.day + offset),
           activities,
           events,
+          personalEvents,
         ),
     ];
   }
@@ -78,7 +84,14 @@ abstract final class Agenda {
     DateTime date,
     List<Activity> activities,
     List<CalendarEvent> events,
+    List<Event> personalEvents,
   ) {
+    final dayPersonal = [
+      for (final event in personalEvents)
+        if (!date.isBefore(startOf(event.start.toLocal())) &&
+            !date.isAfter(startOf(event.end.toLocal())))
+          event,
+    ]..sort((a, b) => a.start.compareTo(b.start));
     final dayActivities = [
       for (final activity in activities)
         if (activity.status.isOpen && _isOn(activity.dueAt, date)) activity,
@@ -93,6 +106,7 @@ abstract final class Agenda {
               !date.isAfter(startOf(event.endDate ?? event.date)))
             event,
       ],
+      personalEvents: dayPersonal,
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:kairo/core/storage/session_controller.dart';
 import 'package:kairo/features/reports/data/models/goal_report.dart';
 import 'package:kairo/features/reports/data/models/report_summary.dart';
 import 'package:kairo/features/reports/data/models/rest_week.dart';
@@ -33,10 +34,10 @@ final reportsProvider = FutureProvider<ReportsData>((ref) async {
   );
 }, isAutoDispose: true);
 
-final reportSummaryProvider = FutureProvider<ReportSummary>(
-  (ref) => ref.watch(reportsApiProvider).summary(),
-  isAutoDispose: true,
-);
+final reportSummaryProvider = FutureProvider<ReportSummary>((ref) {
+  ref.watch(sessionControllerProvider);
+  return ref.watch(reportsApiProvider).summary();
+});
 
 class SelectedReportWeek extends Notifier<DateTime?> {
   @override

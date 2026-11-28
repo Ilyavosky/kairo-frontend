@@ -4,6 +4,7 @@ import 'package:kairo/core/api/api_config.dart';
 import 'package:kairo/core/api/dio_exception_mapper.dart';
 import 'package:kairo/core/api/dio_provider.dart';
 import 'package:kairo/features/events/data/models/event.dart';
+import 'package:kairo/features/events/domain/event_type.dart';
 
 class EventsApi {
   const EventsApi(this._dio);
@@ -13,13 +14,19 @@ class EventsApi {
 
   final Dio _dio;
 
-  Future<List<Event>> list({DateTime? from}) async {
+  Future<List<Event>> list({
+    DateTime? from,
+    DateTime? to,
+    EventType? type,
+  }) async {
     try {
       final response = await _dio.get<List<dynamic>>(
         _path,
         queryParameters: {
           'limite': _limit,
           'desde': ?from?.toUtc().toIso8601String(),
+          'hasta': ?to?.toUtc().toIso8601String(),
+          'tipo': ?type?.apiValue,
         },
       );
       return [

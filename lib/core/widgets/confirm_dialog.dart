@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kairo/core/theme/kairo_spacing.dart';
 
 Future<bool> showConfirmDialog(
   BuildContext context, {
@@ -18,7 +19,9 @@ Future<bool> showConfirmDialog(
         ),
         FilledButton(
           onPressed: () => Navigator.of(context).pop(true),
-          style: FilledButton.styleFrom(minimumSize: const Size(0, 44)),
+          style: FilledButton.styleFrom(
+            minimumSize: const Size(0, KairoSpacing.touchTarget),
+          ),
           child: Text(confirmLabel),
         ),
       ],

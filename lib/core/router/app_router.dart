@@ -7,6 +7,7 @@ import 'package:kairo/core/router/app_shell.dart';
 import 'package:kairo/core/router/session_redirect.dart';
 import 'package:kairo/core/router/splash_screen.dart';
 import 'package:kairo/core/storage/session_controller.dart';
+import 'package:kairo/features/account/presentation/screens/account_screen.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
 import 'package:kairo/features/activities/presentation/screens/activities_screen.dart';
 import 'package:kairo/features/activities/presentation/screens/activity_form_screen.dart';
@@ -207,6 +208,7 @@ final _moreRoute = GoRoute(
         ),
       ],
     ),
+    GoRoute(path: 'cuenta', builder: (context, state) => const AccountScreen()),
     GoRoute(
       path: 'reportes',
       builder: (context, state) => const ReportsScreen(),

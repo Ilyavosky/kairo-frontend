@@ -10,7 +10,7 @@ abstract final class KairoSpacing {
   static const double radiusMd = 8;
   static const double radiusLg = 16;
 
-  static const double touchTarget = 44;
+  static const double touchTarget = 48;
   static const double buttonHeight = 56;
   static const double navBarHeight = 70;
 }

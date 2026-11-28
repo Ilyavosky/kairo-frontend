@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:kairo/core/theme/kairo_spacing.dart';
 import 'package:kairo/features/activities/data/models/activity.dart';
 import 'package:kairo/features/activities/domain/due_label.dart';
+import 'package:kairo/features/events/data/models/event.dart';
 import 'package:kairo/features/home/data/models/calendar_event.dart';
 import 'package:kairo/features/home/domain/agenda.dart';
 
@@ -58,6 +59,10 @@ class AgendaDaySection extends StatelessWidget {
           _EventTile(event: event),
           const SizedBox(height: KairoSpacing.sm),
         ],
+        for (final event in day.personalEvents) ...[
+          _PersonalEventTile(event: event, day: day.date),
+          const SizedBox(height: KairoSpacing.sm),
+        ],
         for (final activity in day.activities) ...[
           _ActivityTile(
             activity: activity,
@@ -106,6 +111,60 @@ class _EventTile extends StatelessWidget {
                 ],
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _PersonalEventTile extends StatelessWidget {
+  const _PersonalEventTile({required this.event, required this.day});
+
+  final Event event;
+  final DateTime day;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final start = event.start.toLocal();
+    final startsToday =
+        start.year == day.year &&
+        start.month == day.month &&
+        start.day == day.day;
+    final place = event.place;
+    final detail = [
+      if (!startsToday) 'Continúa',
+      event.type.label,
+      if (place != null && place.isNotEmpty) place,
+    ].join(' · ');
+
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(KairoSpacing.md),
+        child: Row(
+          children: [
+            SizedBox(
+              width: 52,
+              child: Text(
+                startsToday ? DueLabel.hour(start) : '—',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: scheme.secondary,
+                ),
+              ),
+            ),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(event.title, style: theme.textTheme.titleSmall),
+                  const SizedBox(height: KairoSpacing.xs),
+                  Text(detail, style: theme.textTheme.bodySmall),
+                ],
+              ),
+            ),
+            Icon(Icons.event, color: scheme.secondary),
           ],
         ),
       ),

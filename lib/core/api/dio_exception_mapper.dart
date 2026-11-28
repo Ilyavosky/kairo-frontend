@@ -28,6 +28,7 @@ AppException _fromResponse(Response<dynamic>? response) {
     401 => _unauthorized(response?.data),
     404 => const NotFoundException(),
     400 || 409 || 422 => _validation(response?.data),
+    429 => const TooManyRequestsException(),
     503 => _unavailable(response?.data),
     >= 500 => const ServerException(),
     _ => const UnknownException(),
@@ -49,6 +50,9 @@ ServiceUnavailableException _unavailable(Object? data) {
 }
 
 ValidationException _validation(Object? data) {
+  if (data case {'codigo': 'validacion'}) {
+    return const ValidationException();
+  }
   final detalle = _detalle(data);
   return detalle == null
       ? const ValidationException()

@@ -4,6 +4,8 @@ import 'package:kairo/features/activities/data/models/activity.dart';
 import 'package:kairo/features/activities/data/models/activity_category.dart';
 import 'package:kairo/features/activities/domain/activity_modality.dart';
 import 'package:kairo/features/activities/domain/activity_status.dart';
+import 'package:kairo/features/events/data/models/event.dart';
+import 'package:kairo/features/events/domain/event_type.dart';
 import 'package:kairo/features/home/data/models/calendar_event.dart';
 import 'package:kairo/features/subjects/data/models/subject.dart';
 import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
@@ -11,6 +13,7 @@ import 'package:kairo/features/time_tracking/data/models/timer_session.dart';
 import '../../../helpers/fake_activities_api.dart';
 import '../../../helpers/fake_calendar_api.dart';
 import '../../../helpers/fake_categories_api.dart';
+import '../../../helpers/fake_events_api.dart';
 import '../../../helpers/fake_subjects_api.dart';
 import '../../../helpers/fake_timer_api.dart';
 import '../../../helpers/pump_signed_in_app.dart';
@@ -158,5 +161,30 @@ void main() {
     expect(timerApi.stopNotes, hasLength(1));
     expect(find.text('Cronometrando Estudio'), findsNothing);
     expect(find.text('Guardado: 20 min de Estudio.'), findsOneWidget);
+  });
+
+  testWidgets('la agenda incluye los eventos personales con su tipo', (
+    tester,
+  ) async {
+    final start = DateTime(today.year, today.month, today.day, 23, 30);
+    await pumpSignedInApp(
+      tester,
+      eventsApi: FakeEventsApi(
+        events: [
+          Event(
+            id: 'evento-1',
+            title: 'Examen de redes',
+            start: start,
+            end: start.add(const Duration(minutes: 20)),
+            type: EventType.exam,
+            place: 'Aula 3',
+          ),
+        ],
+      ),
+    );
+
+    expect(find.text('Examen de redes'), findsOneWidget);
+    expect(find.text('Examen · Aula 3'), findsOneWidget);
+    expect(find.text('23:30'), findsOneWidget);
   });
 }
