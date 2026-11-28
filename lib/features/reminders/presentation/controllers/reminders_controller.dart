@@ -48,7 +48,11 @@ final reminderOptionsProvider =
         ],
         ReminderTarget.event: [
           for (final event in events)
-            ReminderOption(event.id, event.title, detail: _eventDate(event)),
+            ReminderOption(
+              event.id,
+              event.title,
+              detail: '${event.type.label} · ${_eventDate(event)}',
+            ),
         ],
         ReminderTarget.goal: [
           for (final goal in goals)

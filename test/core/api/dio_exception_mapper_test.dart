@@ -52,6 +52,13 @@ void main() {
       expect(result.message, 'Correo o contraseña incorrectos');
     });
 
+    test('convierte un 429 en un aviso de esperar', () {
+      final result = mapDioException(badResponse(429));
+
+      expect(result, isA<TooManyRequestsException>());
+      expect(result.message, contains('Espera un momento'));
+    });
+
     test('no muestra el detalle técnico de la validación de campos', () {
       final result = mapDioException(
         badResponse(422, {

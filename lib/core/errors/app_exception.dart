@@ -40,6 +40,14 @@ final class ServiceUnavailableException extends AppException {
   ]);
 }
 
+final class TooManyRequestsException extends AppException {
+  const TooManyRequestsException()
+    : super(
+        'Hiciste muchas solicitudes seguidas. Espera un momento e intenta '
+        'de nuevo.',
+      );
+}
+
 final class ServerException extends AppException {
   const ServerException()
     : super('Ocurrió un error en el servidor. Intenta más tarde.');

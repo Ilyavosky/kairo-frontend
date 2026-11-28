@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Event {
 
- String get id;@JsonKey(name: 'titulo') String get title;@JsonKey(name: 'inicio') DateTime get start;@JsonKey(name: 'fin') DateTime get end;@JsonKey(name: 'materia_id') String? get subjectId;@JsonKey(name: 'lugar') String? get place;
+ String get id;@JsonKey(name: 'titulo') String get title;@JsonKey(name: 'inicio') DateTime get start;@JsonKey(name: 'fin') DateTime get end;@JsonKey(name: 'tipo', unknownEnumValue: EventType.personal) EventType get type;@JsonKey(name: 'actividad_id') String? get activityId;@JsonKey(name: 'materia_id') String? get subjectId;@JsonKey(name: 'lugar') String? get place;
 /// Create a copy of Event
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $EventCopyWith<Event> get copyWith => _$EventCopyWithImpl<Event>(this as Event, 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Event&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.subjectId, subjectId) || other.subjectId == subjectId)&&(identical(other.place, place) || other.place == place));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Event&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.type, type) || other.type == type)&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.subjectId, subjectId) || other.subjectId == subjectId)&&(identical(other.place, place) || other.place == place));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,start,end,subjectId,place);
+int get hashCode => Object.hash(runtimeType,id,title,start,end,type,activityId,subjectId,place);
 
 @override
 String toString() {
-  return 'Event(id: $id, title: $title, start: $start, end: $end, subjectId: $subjectId, place: $place)';
+  return 'Event(id: $id, title: $title, start: $start, end: $end, type: $type, activityId: $activityId, subjectId: $subjectId, place: $place)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $EventCopyWith<$Res>  {
   factory $EventCopyWith(Event value, $Res Function(Event) _then) = _$EventCopyWithImpl;
 @useResult
 $Res call({
- String id,@JsonKey(name: 'titulo') String title,@JsonKey(name: 'inicio') DateTime start,@JsonKey(name: 'fin') DateTime end,@JsonKey(name: 'materia_id') String? subjectId,@JsonKey(name: 'lugar') String? place
+ String id,@JsonKey(name: 'titulo') String title,@JsonKey(name: 'inicio') DateTime start,@JsonKey(name: 'fin') DateTime end,@JsonKey(name: 'tipo', unknownEnumValue: EventType.personal) EventType type,@JsonKey(name: 'actividad_id') String? activityId,@JsonKey(name: 'materia_id') String? subjectId,@JsonKey(name: 'lugar') String? place
 });
 
 
@@ -65,13 +65,15 @@ class _$EventCopyWithImpl<$Res>
 
 /// Create a copy of Event
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? start = null,Object? end = null,Object? subjectId = freezed,Object? place = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? title = null,Object? start = null,Object? end = null,Object? type = null,Object? activityId = freezed,Object? subjectId = freezed,Object? place = freezed,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
 as DateTime,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
-as DateTime,subjectId: freezed == subjectId ? _self.subjectId : subjectId // ignore: cast_nullable_to_non_nullable
+as DateTime,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as EventType,activityId: freezed == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
+as String?,subjectId: freezed == subjectId ? _self.subjectId : subjectId // ignore: cast_nullable_to_non_nullable
 as String?,place: freezed == place ? _self.place : place // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -158,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'tipo', unknownEnumValue: EventType.personal)  EventType type, @JsonKey(name: 'actividad_id')  String? activityId, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Event() when $default != null:
-return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that.place);case _:
+return $default(_that.id,_that.title,_that.start,_that.end,_that.type,_that.activityId,_that.subjectId,_that.place);case _:
   return orElse();
 
 }
@@ -179,10 +181,10 @@ return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'tipo', unknownEnumValue: EventType.personal)  EventType type, @JsonKey(name: 'actividad_id')  String? activityId, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)  $default,) {final _that = this;
 switch (_that) {
 case _Event():
-return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that.place);case _:
+return $default(_that.id,_that.title,_that.start,_that.end,_that.type,_that.activityId,_that.subjectId,_that.place);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +201,10 @@ return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id, @JsonKey(name: 'titulo')  String title, @JsonKey(name: 'inicio')  DateTime start, @JsonKey(name: 'fin')  DateTime end, @JsonKey(name: 'tipo', unknownEnumValue: EventType.personal)  EventType type, @JsonKey(name: 'actividad_id')  String? activityId, @JsonKey(name: 'materia_id')  String? subjectId, @JsonKey(name: 'lugar')  String? place)?  $default,) {final _that = this;
 switch (_that) {
 case _Event() when $default != null:
-return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that.place);case _:
+return $default(_that.id,_that.title,_that.start,_that.end,_that.type,_that.activityId,_that.subjectId,_that.place);case _:
   return null;
 
 }
@@ -214,13 +216,15 @@ return $default(_that.id,_that.title,_that.start,_that.end,_that.subjectId,_that
 @JsonSerializable()
 
 class _Event implements Event {
-  const _Event({required this.id, @JsonKey(name: 'titulo') required this.title, @JsonKey(name: 'inicio') required this.start, @JsonKey(name: 'fin') required this.end, @JsonKey(name: 'materia_id') this.subjectId, @JsonKey(name: 'lugar') this.place});
+  const _Event({required this.id, @JsonKey(name: 'titulo') required this.title, @JsonKey(name: 'inicio') required this.start, @JsonKey(name: 'fin') required this.end, @JsonKey(name: 'tipo', unknownEnumValue: EventType.personal) this.type = EventType.personal, @JsonKey(name: 'actividad_id') this.activityId, @JsonKey(name: 'materia_id') this.subjectId, @JsonKey(name: 'lugar') this.place});
   factory _Event.fromJson(Map<String, dynamic> json) => _$EventFromJson(json);
 
 @override final  String id;
 @override@JsonKey(name: 'titulo') final  String title;
 @override@JsonKey(name: 'inicio') final  DateTime start;
 @override@JsonKey(name: 'fin') final  DateTime end;
+@override@JsonKey(name: 'tipo', unknownEnumValue: EventType.personal) final  EventType type;
+@override@JsonKey(name: 'actividad_id') final  String? activityId;
 @override@JsonKey(name: 'materia_id') final  String? subjectId;
 @override@JsonKey(name: 'lugar') final  String? place;
 
@@ -237,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Event&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.subjectId, subjectId) || other.subjectId == subjectId)&&(identical(other.place, place) || other.place == place));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Event&&(identical(other.id, id) || other.id == id)&&(identical(other.title, title) || other.title == title)&&(identical(other.start, start) || other.start == start)&&(identical(other.end, end) || other.end == end)&&(identical(other.type, type) || other.type == type)&&(identical(other.activityId, activityId) || other.activityId == activityId)&&(identical(other.subjectId, subjectId) || other.subjectId == subjectId)&&(identical(other.place, place) || other.place == place));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,title,start,end,subjectId,place);
+int get hashCode => Object.hash(runtimeType,id,title,start,end,type,activityId,subjectId,place);
 
 @override
 String toString() {
-  return 'Event(id: $id, title: $title, start: $start, end: $end, subjectId: $subjectId, place: $place)';
+  return 'Event(id: $id, title: $title, start: $start, end: $end, type: $type, activityId: $activityId, subjectId: $subjectId, place: $place)';
 }
 
 
@@ -257,7 +261,7 @@ abstract mixin class _$EventCopyWith<$Res> implements $EventCopyWith<$Res> {
   factory _$EventCopyWith(_Event value, $Res Function(_Event) _then) = __$EventCopyWithImpl;
 @override @useResult
 $Res call({
- String id,@JsonKey(name: 'titulo') String title,@JsonKey(name: 'inicio') DateTime start,@JsonKey(name: 'fin') DateTime end,@JsonKey(name: 'materia_id') String? subjectId,@JsonKey(name: 'lugar') String? place
+ String id,@JsonKey(name: 'titulo') String title,@JsonKey(name: 'inicio') DateTime start,@JsonKey(name: 'fin') DateTime end,@JsonKey(name: 'tipo', unknownEnumValue: EventType.personal) EventType type,@JsonKey(name: 'actividad_id') String? activityId,@JsonKey(name: 'materia_id') String? subjectId,@JsonKey(name: 'lugar') String? place
 });
 
 
@@ -274,13 +278,15 @@ class __$EventCopyWithImpl<$Res>
 
 /// Create a copy of Event
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? start = null,Object? end = null,Object? subjectId = freezed,Object? place = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? title = null,Object? start = null,Object? end = null,Object? type = null,Object? activityId = freezed,Object? subjectId = freezed,Object? place = freezed,}) {
   return _then(_Event(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,start: null == start ? _self.start : start // ignore: cast_nullable_to_non_nullable
 as DateTime,end: null == end ? _self.end : end // ignore: cast_nullable_to_non_nullable
-as DateTime,subjectId: freezed == subjectId ? _self.subjectId : subjectId // ignore: cast_nullable_to_non_nullable
+as DateTime,type: null == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
+as EventType,activityId: freezed == activityId ? _self.activityId : activityId // ignore: cast_nullable_to_non_nullable
+as String?,subjectId: freezed == subjectId ? _self.subjectId : subjectId // ignore: cast_nullable_to_non_nullable
 as String?,place: freezed == place ? _self.place : place // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
