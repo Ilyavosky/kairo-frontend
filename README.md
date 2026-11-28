@@ -84,6 +84,29 @@ El workflow `.github/workflows/ci.yml` corre estos mismos pasos en cada PR hacia
 `main` y `develop`. Si el código no está formateado, tiene avisos de análisis o
 alguna prueba falla, el PR no se puede mergear. Las pruebas corren sin emulador.
 
+## Regresión en teléfono real
+
+Antes de la entrega se hace una pasada completa en un teléfono Android real con
+la lista de [`docs/regresion.md`](docs/regresion.md). Cada error encontrado se
+abre como issue con la etiqueta `bug`.
+
+## Pendientes conocidos
+
+Desde el 22 de noviembre no entran funciones nuevas. Lo siguiente queda
+aplazado de forma explícita para después de la entrega:
+
+| Pendiente | Motivo |
+|---|---|
+| Desvincular Telegram desde la app | El backend todavía no tiene un endpoint para quitar la vinculación |
+| Formulario para crear y editar eventos | Por ahora los eventos se crean desde el bot y ya aparecen en la agenda |
+| Etiquetas, `/reportes/pipeline` y `/capturas/metricas` | Opcionales; la app no los usa |
+| Notificaciones push y modo sin conexión (T48) | Opcional |
+| Actualizaciones mayores de dependencias (`freezed` 4, `flutter_secure_storage` 11, `flutter_timezone` 5, `cupertino_icons` 2, `actions/checkout` 7) | Cambian código generado o APIs; se evalúan después del congelamiento |
+| Firma del APK con llave propia y `applicationId` definitivo | Se resuelve en el T44 |
+
+Los errores que se encuentren en la regresión y no se corrijan antes de la
+demo se agregan a esta tabla con su issue.
+
 ## Cómo contribuir
 
 - Ramas desde `develop`: `feat/txx-nombre`, `fix/txx-nombre` o `docs/txx-nombre`.
