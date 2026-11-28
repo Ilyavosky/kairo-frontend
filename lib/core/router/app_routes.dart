@@ -16,6 +16,8 @@ abstract final class AppRoutes {
 
   static const telegram = '/mas/telegram';
 
+  static const reports = '/mas/reportes';
+
   static String selfAssessmentWeek(String week) => '$selfAssessment/$week';
 
   static const Set<String> publicRoutes = {splash, login, register};

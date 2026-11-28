@@ -54,6 +54,8 @@ void main() {
     );
     await tester.tap(find.text('Más'));
     await tester.pumpAndSettle();
+    await tester.ensureVisible(find.text('Recordatorios'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('Recordatorios'));
     await tester.pumpAndSettle();
   }

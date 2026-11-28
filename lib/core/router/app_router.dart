@@ -22,6 +22,7 @@ import 'package:kairo/features/home/presentation/screens/home_screen.dart';
 import 'package:kairo/features/more/presentation/screens/more_screen.dart';
 import 'package:kairo/features/reminders/presentation/screens/reminder_form_screen.dart';
 import 'package:kairo/features/reminders/presentation/screens/reminders_screen.dart';
+import 'package:kairo/features/reports/presentation/screens/reports_screen.dart';
 import 'package:kairo/features/self_assessment/data/models/self_assessment.dart';
 import 'package:kairo/features/self_assessment/presentation/screens/self_assessment_form_screen.dart';
 import 'package:kairo/features/self_assessment/presentation/screens/self_assessment_screen.dart';
@@ -205,6 +206,10 @@ final _moreRoute = GoRoute(
           builder: (context, state) => const ReminderFormScreen(),
         ),
       ],
+    ),
+    GoRoute(
+      path: 'reportes',
+      builder: (context, state) => const ReportsScreen(),
     ),
     GoRoute(
       path: 'telegram',
