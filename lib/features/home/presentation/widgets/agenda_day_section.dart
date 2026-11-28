@@ -12,6 +12,7 @@ class AgendaDaySection extends StatelessWidget {
     required this.now,
     required this.subjectNames,
     required this.onActivityTap,
+    this.onEventTap,
     super.key,
   });
 
@@ -19,6 +20,7 @@ class AgendaDaySection extends StatelessWidget {
   final DateTime now;
   final Map<String, String> subjectNames;
   final ValueChanged<Activity> onActivityTap;
+  final ValueChanged<Event>? onEventTap;
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,11 @@ class AgendaDaySection extends StatelessWidget {
           const SizedBox(height: KairoSpacing.sm),
         ],
         for (final event in day.personalEvents) ...[
-          _PersonalEventTile(event: event, day: day.date),
+          _PersonalEventTile(
+            event: event,
+            day: day.date,
+            onTap: onEventTap == null ? null : () => onEventTap!(event),
+          ),
           const SizedBox(height: KairoSpacing.sm),
         ],
         for (final activity in day.activities) ...[
@@ -119,10 +125,15 @@ class _EventTile extends StatelessWidget {
 }
 
 class _PersonalEventTile extends StatelessWidget {
-  const _PersonalEventTile({required this.event, required this.day});
+  const _PersonalEventTile({
+    required this.event,
+    required this.day,
+    this.onTap,
+  });
 
   final Event event;
   final DateTime day;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -141,31 +152,36 @@ class _PersonalEventTile extends StatelessWidget {
     ].join(' · ');
 
     return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(KairoSpacing.md),
-        child: Row(
-          children: [
-            SizedBox(
-              width: 52,
-              child: Text(
-                startsToday ? DueLabel.hour(start) : '—',
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: scheme.secondary,
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.all(KairoSpacing.md),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 52,
+                child: Text(
+                  startsToday ? DueLabel.hour(start) : '—',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: scheme.secondary,
+                  ),
                 ),
               ),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(event.title, style: theme.textTheme.titleSmall),
-                  const SizedBox(height: KairoSpacing.xs),
-                  Text(detail, style: theme.textTheme.bodySmall),
-                ],
+              const SizedBox(width: KairoSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(event.title, style: theme.textTheme.titleSmall),
+                    const SizedBox(height: KairoSpacing.xs),
+                    Text(detail, style: theme.textTheme.bodySmall),
+                  ],
+                ),
               ),
-            ),
-            Icon(Icons.event, color: scheme.secondary),
-          ],
+              Icon(Icons.event, color: scheme.secondary),
+            ],
+          ),
         ),
       ),
     );
@@ -207,6 +223,7 @@ class _ActivityTile extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: KairoSpacing.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

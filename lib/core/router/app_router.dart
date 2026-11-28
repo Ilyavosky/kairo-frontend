@@ -14,6 +14,8 @@ import 'package:kairo/features/activities/presentation/screens/activity_form_scr
 import 'package:kairo/features/auth/presentation/screens/login_screen.dart';
 import 'package:kairo/features/auth/presentation/screens/register_screen.dart';
 import 'package:kairo/features/capture/presentation/screens/capture_screen.dart';
+import 'package:kairo/features/events/data/models/event.dart';
+import 'package:kairo/features/events/presentation/screens/event_form_screen.dart';
 import 'package:kairo/features/goals/data/models/goal.dart';
 import 'package:kairo/features/goals/presentation/controllers/goals_controller.dart';
 import 'package:kairo/features/goals/presentation/screens/goal_detail_screen.dart';
@@ -152,6 +154,17 @@ final _homeRoute = GoRoute(
           ),
         ),
       ],
+    ),
+    GoRoute(
+      path: 'evento/nuevo',
+      builder: (context, state) => const EventFormScreen(),
+    ),
+    GoRoute(
+      path: 'evento/:id',
+      builder: (context, state) => EventFormScreen(
+        eventId: state.pathParameters['id'],
+        initial: state.extra is Event ? state.extra! as Event : null,
+      ),
     ),
     GoRoute(
       path: 'actividad/:id',
